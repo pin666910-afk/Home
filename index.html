@@ -109,6 +109,11 @@ body:not(.admin) .adm-only{display:none}
 .note{color:var(--mute);font-size:13px;margin:0 0 14px}
 .chk{display:flex;align-items:center;gap:8px;font-size:14px;margin:12px 0}.chk input{width:auto;min-height:0;accent-color:var(--accent)}
 .stack{display:grid;gap:10px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tbtns{display:flex;gap:6px;flex:none}
+#pwBtn{font-size:14px;padding:6px 10px;min-height:36px}
+body.locked #pwBtn{display:none}
+.top{flex-wrap:wrap}
 .yscroll{overflow-x:auto}
 .ytbl{border-collapse:separate;border-spacing:0;min-width:480px;width:100%;font-variant-numeric:tabular-nums;font-size:13px}
 .ytbl th,.ytbl td{padding:9px 6px;text-align:right;white-space:normal;border-bottom:1.5px dashed var(--line)}
@@ -135,12 +140,12 @@ body:not(.locked) #gate{display:none}
 <div class="wrap">
   <div class="top">
     <div class="brand"><img class="mascot" src="icon-192.png" alt="" width="50" height="50"><div><h1>藍家記帳</h1><small class="sync" id="sync" role="status">連線中…</small></div></div>
-    <button id="login" type="button">管理者登入</button>
+    <div class="tbtns"><button id="pwBtn" type="button">改密碼</button><button id="login" type="button">登入</button></div>
   </div>
 
   <section class="book" id="gate">
     <h2>請先登入</h2>
-    <p class="note">輸入管理者幫你加入的 Email，系統會寄一封登入連結到信箱，點連結即可登入，不用記密碼。</p>
+    <p class="note">請用管理者幫你建立的 Email 與密碼登入。</p>
     <button class="primary" id="gLogin" type="button">登入</button>
     <p class="msg" id="gMsg" style="margin-top:10px"></p>
   </section>
@@ -220,9 +225,14 @@ body:not(.locked) #gate{display:none}
     <p class="note">修改分類名稱時，可選擇是否同步更新所有舊紀錄；所有裝置會即時看到變更。</p>
     <section class="book">
       <h2>家人帳號</h2>
-      <p class="note">只有在這裡加入的 Email 才能登入並記帳（家人只能新增支出）。家人用 Email 登入連結登入，不需要密碼。</p>
+      <p class="note">在這裡新增家人的 Email 並設定密碼，家人就能用「Email＋密碼」登入記帳（只能新增支出），不需要收信。密碼建立後無法再查看。忘記密碼時：登入後可按右上角「改密碼」；若已無法登入，請到 Firebase 控制台 Authentication → 使用者 刪除該帳號，再回這裡重新新增。</p>
       <div id="memList"></div>
-      <div class="srow"><input type="email" id="mEmail" placeholder="家人 Email" aria-label="家人 Email"><input type="text" id="mName" placeholder="稱呼" maxlength="10" aria-label="稱呼"><button type="button" id="mAdd" style="color:var(--accent)">新增</button></div>
+      <div class="stack">
+        <input type="email" id="mEmail" placeholder="家人 Email" autocomplete="off" aria-label="家人 Email">
+        <div class="two"><input type="text" id="mName" placeholder="稱呼（例：媽媽）" maxlength="10" autocomplete="off" aria-label="稱呼"><input type="text" id="mPw" placeholder="設定密碼（至少 6 碼）" autocomplete="off" aria-label="密碼"></div>
+        <button type="button" class="primary" id="mAdd">新增家人</button>
+        <p class="msg" id="mMsg" role="status"></p>
+      </div>
     </section>
     <button type="button" data-reset="1">還原預設分類</button>
   </div>
@@ -268,11 +278,19 @@ body:not(.locked) #gate{display:none}
   <form id="fLogin">
     <h2>登入</h2>
     <input type="email" id="em" placeholder="Email" autocomplete="username" required>
-    <button type="button" class="primary" id="lLink">寄送登入連結到信箱</button>
-    <p class="note" style="margin:0">管理者也可以用密碼登入：</p>
-    <input type="password" id="pw" placeholder="密碼（僅管理者）" autocomplete="current-password">
+    <input type="password" id="pw" placeholder="密碼" autocomplete="current-password" required>
     <p class="msg" id="lMsg"></p>
-    <div class="btns"><button type="button" id="lCancel">取消</button><button type="submit">密碼登入</button></div>
+    <div class="btns"><button type="button" id="lCancel">取消</button><button class="primary" type="submit">登入</button></div>
+  </form>
+</dialog>
+
+<dialog id="dPw">
+  <form id="fPw">
+    <h2>變更密碼</h2>
+    <input type="password" id="npw" placeholder="新密碼（至少 6 碼）" autocomplete="new-password" required>
+    <input type="password" id="npw2" placeholder="再輸入一次新密碼" autocomplete="new-password" required>
+    <p class="msg" id="pMsg"></p>
+    <div class="btns"><button type="button" id="pCancel">取消</button><button class="primary" type="submit">更新密碼</button></div>
   </form>
 </dialog>
 
@@ -289,8 +307,8 @@ body:not(.locked) #gate{display:none}
 </dialog>
 
 <script type="module">
-import {initializeApp} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-import {getAuth,onAuthStateChanged,signInWithEmailAndPassword,signOut,sendSignInLinkToEmail,isSignInWithEmailLink,signInWithEmailLink} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import {initializeApp,getApps} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import {getAuth,onAuthStateChanged,signInWithEmailAndPassword,signOut,createUserWithEmailAndPassword,updatePassword} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
 import {initializeFirestore,persistentLocalCache,persistentMultipleTabManager,collection,doc,onSnapshot,setDoc,addDoc,updateDoc,deleteDoc,writeBatch,getDoc,terminate,clearIndexedDbPersistence} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
 /* ====== ① 這裡填入你的 Firebase 設定（Firebase 控制台 → 專案設定 → 你的應用程式）====== */
@@ -414,9 +432,9 @@ $("fEdit").onsubmit=e=>{
   ym=$("eDate").value.slice(0,7);$("dEdit").close();render();
 };
 
-/* 登入／登出：Email 登入連結（家人）或密碼（管理者）*/
-function openLogin(){$("pw").value="";$("lMsg").textContent="";$("lMsg").style.color="";$("em").value=lsS("ledger-email");$("dLogin").showModal();}
-function lMsg(t,ok){$("lMsg").style.color=ok?"var(--in)":"";$("lMsg").textContent=t;}
+/* 登入／登出：Email + 密碼（帳號由管理者在「家人帳號」建立）*/
+function lMsg(t){$("lMsg").textContent=t;}
+function openLogin(){$("pw").value="";lMsg("");$("em").value=lsS("ledger-email");$("dLogin").showModal();}
 function needAuth(){if(!auth){fail("尚未設定 Firebase");return true;}return false;}
 $("login").onclick=()=>{
   if(needAuth())return;
@@ -430,19 +448,21 @@ async function logout(){
   location.reload();
 }
 $("lCancel").onclick=()=>$("dLogin").close();
-$("lLink").onclick=async()=>{
-  const em=$("em").value.trim();
-  if(!/^\S+@\S+\.\S+$/.test(em)){lMsg("請輸入正確的 Email。");return;}
-  try{
-    await sendSignInLinkToEmail(auth,em,{url:location.origin+location.pathname,handleCodeInApp:true});
-    lsSet("ledger-email",em);lMsg("已寄出登入連結，請到信箱點擊（也請看垃圾郵件匣）。",true);
-  }catch(err){lMsg("寄送失敗："+(err.code||err.message));}
-};
 $("fLogin").onsubmit=async e=>{
+  e.preventDefault();lMsg("");
+  const em=$("em").value.trim();
+  try{await signInWithEmailAndPassword(auth,em,$("pw").value);lsSet("ledger-email",em);$("dLogin").close();}
+  catch(err){lMsg(["auth/invalid-credential","auth/wrong-password","auth/user-not-found","auth/invalid-email"].includes(err.code)?"Email 或密碼不正確。":err.code==="auth/too-many-requests"?"嘗試次數過多，請稍後再試。":"登入失敗："+(err.code||err.message));}
+};
+/* 變更自己的密碼 */
+$("pwBtn").onclick=()=>{$("npw").value="";$("npw2").value="";$("pMsg").textContent="";$("dPw").showModal();};
+$("pCancel").onclick=()=>$("dPw").close();
+$("fPw").onsubmit=async e=>{
   e.preventDefault();
-  if(!$("pw").value){lMsg("要用密碼登入請輸入密碼；家人請按上方「寄送登入連結」。");return;}
-  try{await signInWithEmailAndPassword(auth,$("em").value.trim(),$("pw").value);$("dLogin").close();}
-  catch(err){lMsg(["auth/invalid-credential","auth/wrong-password","auth/user-not-found","auth/invalid-email"].includes(err.code)?"帳號或密碼不正確。":"登入失敗："+(err.code||err.message));}
+  if($("npw").value.length<6){$("pMsg").textContent="密碼至少 6 個字元。";return;}
+  if($("npw").value!==$("npw2").value){$("pMsg").textContent="兩次輸入的密碼不一致。";return;}
+  try{await updatePassword(auth.currentUser,$("npw").value);$("dPw").close();setSync("密碼已更新");}
+  catch(err){$("pMsg").textContent=err.code==="auth/requires-recent-login"?"為了安全，請先登出、重新登入後再改密碼。":"失敗："+(err.code||err.message);}
 };
 
 /* 家人帳號管理（管理者）：members/{email} */
@@ -450,15 +470,35 @@ function renderMembers(){
   const ks=Object.keys(MEMBERS).sort();
   $("memList").innerHTML=ks.length?ks.map(k=>'<div class="mrow"><span>'+esc(MEMBERS[k].name||"（未命名）")+'<br><small class="who0">'+esc(k)+'</small></span><button type="button" data-mrm="'+esc(k)+'">移除</button></div>').join(""):'<p class="note">尚未新增家人。</p>';
 }
-$("mAdd").onclick=()=>{
-  const em=$("mEmail").value.trim().toLowerCase(),nm=$("mName").value.trim().slice(0,10);
-  if(!/^\S+@\S+\.\S+$/.test(em)){setSync("請輸入正確的家人 Email",true);return;}
-  if(em===ADMIN_EMAIL.toLowerCase()){setSync("這是管理者的 Email，不需新增",true);return;}
-  setDoc(doc(db,"members",em),{email:em,name:nm,addedAt:Date.now()}).then(()=>{$("mEmail").value="";$("mName").value="";}).catch(fail);
+function mMsg(t,ok){const e=$("mMsg");e.style.color=ok?"var(--in)":"";e.textContent=t;}
+$("mAdd").onclick=async()=>{
+  const em=$("mEmail").value.trim().toLowerCase(),nm=$("mName").value.trim().slice(0,10),pw=$("mPw").value;
+  if(!/^\S+@\S+\.\S+$/.test(em)){mMsg("請輸入正確的家人 Email。");return;}
+  if(em===ADMIN_EMAIL.toLowerCase()){mMsg("這是管理者的 Email，不需要新增。");return;}
+  if(pw.length<6){mMsg("密碼至少 6 個字元。");return;}
+  const btn=$("mAdd");btn.disabled=true;mMsg("建立中…",true);
+  try{
+    let existed=false;
+    try{                                   /* 用第二個 Firebase 實例建帳號，管理者不會被登出 */
+      const app2=getApps().find(x=>x.name==="creator")||initializeApp(FIREBASE_CONFIG,"creator");
+      const a2=getAuth(app2);
+      await createUserWithEmailAndPassword(a2,em,pw);
+      await signOut(a2);
+    }catch(err){
+      if(err.code==="auth/email-already-in-use")existed=true;
+      else if(err.code==="auth/weak-password"){mMsg("密碼太簡單，請至少 6 碼。");return;}
+      else if(err.code==="auth/operation-not-allowed"){mMsg("Firebase 尚未啟用「電子郵件／密碼」登入方式。");return;}
+      else throw err;
+    }
+    await setDoc(doc(db,"members",em),{email:em,name:nm,addedAt:Date.now()});
+    $("mEmail").value="";$("mName").value="";$("mPw").value="";
+    mMsg(existed?"已加入名單。但這個 Email 之前已有帳號，密碼沒有變更；若要改，請到 Firebase 控制台 Authentication → 使用者 刪除該帳號後重新新增。":"已建立帳號並加入名單，請把 Email 與密碼告訴家人。",true);
+  }catch(err){mMsg("新增失敗："+(err.code||err.message));}
+  finally{btn.disabled=false;}
 };
 $("memList").onclick=e=>{
   const k=e.target.getAttribute("data-mrm");if(!k)return;
-  ask("移除「"+whoName(k)+"」（"+k+"）？移除後這個 Email 就無法登入。").then(ok=>{if(ok)deleteDoc(doc(db,"members",k)).catch(fail);});
+  ask("移除「"+whoName(k)+"」（"+k+"）？移除後這個 Email 就無法使用記帳。").then(ok=>{if(ok)deleteDoc(doc(db,"members",k)).catch(fail);});
 };
 
 function ask(msg){return new Promise(res=>{const d=$("dAsk");$("aMsg").textContent=msg;const done=v=>{d.onclose=null;$("fAsk").onsubmit=null;$("aNo").onclick=null;if(d.open)d.close();res(v);};$("fAsk").onsubmit=e=>{e.preventDefault();done(true);};$("aNo").onclick=()=>done(false);d.onclose=()=>done(false);d.showModal();});}
@@ -665,13 +705,6 @@ if(FIREBASE_CONFIG.apiKey.indexOf("YOUR")===0){
   const app=initializeApp(FIREBASE_CONFIG);
   auth=getAuth(app);
   db=initializeFirestore(app,{localCache:persistentLocalCache({tabManager:persistentMultipleTabManager()})});
-  if(isSignInWithEmailLink(auth,location.href)){          /* 從信箱點連結回來 */
-    const em=(lsS("ledger-email")||prompt("請輸入收到登入連結的 Email：")||"").trim();
-    signInWithEmailLink(auth,em,location.href)
-      .then(()=>lsSet("ledger-email",em))
-      .catch(err=>{$("gMsg").textContent="登入連結無效或已過期，請重新寄送。（"+(err.code||err.message)+"）";})
-      .finally(()=>history.replaceState(null,"",location.pathname));
-  }
   onAuthStateChanged(auth,async user=>{
     unsubs.forEach(f=>f());unsubs=[];started=false;seedChecked=false;
     if(!user||user.isAnonymous){
@@ -681,7 +714,7 @@ if(FIREBASE_CONFIG.apiKey.indexOf("YOUR")===0){
     const em=(user.email||"").toLowerCase(),isAdmin=em===ADMIN_EMAIL.toLowerCase();
     if(!isAdmin){
       try{const m=await getDoc(doc(db,"members",em));if(!m.exists())throw new Error("no member");}
-      catch(e){$("gMsg").textContent="「"+em+"」尚未被管理者加入（或 Email 尚未驗證），請聯絡管理者。";await signOut(auth);return;}
+      catch(e){$("gMsg").textContent="「"+em+"」不在家人名單內，請聯絡管理者。";await signOut(auth);return;}
     }
     myEmail=em;admin=isAdmin;$("gMsg").textContent="";locked(false);applyAdmin();listen();
   });
