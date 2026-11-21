@@ -3,127 +3,138 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>家用記帳手冊</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<title>藍家記帳</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chiron+GoRound+TC:wght@400;600;700&family=Huninn&display=swap">
+<meta name="color-scheme" content="light only">
+<meta name="theme-color" content="#9fd3f0">
+<meta name="application-name" content="藍家記帳">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="藍家記帳">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="icon" type="image/png" sizes="64x64" href="favicon-64.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <style>
-:root{--bg:#f3eefb;--paper:#fff;--line:#e0d5f2;--ink:#2a1f45;--mute:#7a6c99;--in:#2c8a68;--out:#c2415b;--accent:#6d3fc4;--accent-t:#fff;--soft:#ece3fa;--bar:#c9b2f0;
-box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#150f24;--paper:#211a38;--line:#372c58;--ink:#ece6fa;--mute:#a498c4;--in:#6fd6ab;--out:#f28ba0;--accent:#b79cf5;--accent-t:#1a1030;--soft:#2c2250;--bar:#5a3f99;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#150f24;--paper:#211a38;--line:#372c58;--ink:#ece6fa;--mute:#a498c4;--in:#6fd6ab;--out:#f28ba0;--accent:#b79cf5;--accent-t:#1a1030;--soft:#2c2250;--bar:#5a3f99;color-scheme:dark}
+:root{--bg:#fff4e0;--paper:#fffdf7;--line:#e4d0b2;--ink:#5a4636;--mute:#94806b;--in:#27946a;--out:#dc4f6a;--accent:#e2506f;--accent-t:#5a4636;--pink:#ffc2d1;--soft:#ffeaf0;--bar:#ffc2d1;--blue:#bfe3f7;--yellow:#ffe08a;--mint:#cdeedd;--shadow:#dcc3a0;
+--wob:20px 26px 18px 24px/24px 18px 26px 20px;--wob2:12px 16px 11px 15px/15px 11px 16px 12px;
+--f:"Huninn","Chiron GoRound TC","PingFang TC","Microsoft JhengHei",sans-serif;--fh:"Chiron GoRound TC","Huninn","PingFang TC","Microsoft JhengHei",sans-serif;
+color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 "Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif}
+[hidden]{display:none!important}
+body{margin:0;color:var(--ink);font:16px/1.6 var(--f);background-color:var(--bg);background-image:radial-gradient(#f1d9b5 1.6px,transparent 1.7px);background-size:24px 24px}
 .wrap{max-width:760px;margin:0 auto;padding:14px 14px 48px}
-.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:4px 0 14px}
-h1{font:700 24px/1.2 "Noto Serif TC",serif;margin:0;letter-spacing:.06em}
-h2{font:700 17px "Noto Serif TC",serif;margin:0 0 10px}
-.book{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:14px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:4px 0 16px}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.mascot{width:50px;height:50px;border-radius:15px;border:2.5px solid var(--ink);box-shadow:2px 3px 0 var(--ink);flex:none;transform:rotate(-4deg);background:var(--blue)}
+h1{font:700 26px/1.1 var(--fh);margin:0;letter-spacing:.08em;color:#3d86bd;text-shadow:2px 2px 0 #fff,3px 3px 0 var(--blue)}
+h2{font:700 17px var(--fh);margin:0 0 10px}
+h2::before{content:"✿";color:var(--accent);margin-right:6px}
+.sync{display:block;font-size:12px;color:var(--mute);margin-top:3px}
+.book{background:var(--paper);border:2.5px solid var(--ink);border-radius:var(--wob);padding:14px;margin-bottom:16px;box-shadow:4px 5px 0 var(--shadow)}
 .nav{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
-.nav .ym{font:700 22px "Noto Serif TC",serif;min-width:7.5em;text-align:center}
-button,input,select{font:inherit;color:var(--ink)}
-button{cursor:pointer;border:1px solid var(--line);background:var(--paper);border-radius:10px;padding:8px 14px;min-height:40px}
-button:hover{border-color:var(--accent)}
-button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.primary{background:var(--accent);color:var(--accent-t);border-color:var(--accent);font-weight:700}
+.nav .ym{font:700 22px var(--fh);min-width:7.5em;text-align:center}
+button{font:inherit;color:var(--ink);cursor:pointer;border:2px solid var(--ink);background:var(--paper);border-radius:var(--wob2);padding:8px 14px;min-height:40px;box-shadow:2px 3px 0 var(--ink);transition:transform .08s,box-shadow .08s,background .15s}
+button:hover{background:var(--yellow)}
+button:active{transform:translate(2px,3px);box-shadow:0 0 0 var(--ink)}
+button:disabled{opacity:.45;cursor:not-allowed;box-shadow:none;background:var(--paper)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #7cc3ee;outline-offset:2px}
+.primary{background:var(--pink);font-weight:700}.primary:hover{background:#ffabc1}
 #login{white-space:nowrap;font-size:14px;padding:6px 12px;min-height:36px}
-body.admin #login{background:var(--soft);border-color:var(--accent);color:var(--accent);font-weight:700}
-input,select{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px 10px;min-height:42px;min-width:0;width:100%}
-.sum{display:grid;grid-template-columns:repeat(3,1fr);text-align:center;background:linear-gradient(135deg,var(--soft),var(--paper))}
-.sum div{padding:2px 6px}.sum div+div{border-left:1px solid var(--line)}
+body.admin #login{background:var(--mint);font-weight:700}
+input,select{font:inherit;color:var(--ink);background:#fffdf7;border:2px solid var(--ink);border-radius:var(--wob2);padding:8px 10px;min-height:42px;min-width:0;width:100%}
+input::placeholder{color:#b8a58f}
+.sum{display:grid;grid-template-columns:repeat(3,1fr);text-align:center;background:linear-gradient(135deg,#fff0f4,#eaf6fd)}
+.sum div{padding:2px 6px}.sum div+div{border-left:2px dashed var(--line)}
 .sum small{color:var(--mute);display:block}
-.sum b{font:700 20px "Noto Serif TC",serif;font-variant-numeric:tabular-nums}
+.sum b{font:700 20px var(--fh);font-variant-numeric:tabular-nums}
 .in{color:var(--in)}.out{color:var(--out)}
 form.add{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
-.s2{grid-column:span 2}
-.seg{display:flex}.seg label{flex:1;text-align:center;border:1px solid var(--line);padding:9px 0;cursor:pointer}
-.seg label:first-child{border-radius:10px 0 0 10px}.seg label:last-child{border-radius:0 10px 10px 0;border-left:0}
+.s2,.s3{grid-column:span 2}
+.seg{display:flex}.seg label{flex:1;text-align:center;border:2px solid var(--ink);padding:8px 0;cursor:pointer;background:var(--paper)}
+.seg label:first-child{border-radius:15px 4px 4px 15px}.seg label:last-child{border-radius:4px 15px 15px 4px;border-left:0}
 .seg input{position:absolute;opacity:0;width:1px;min-height:0}
-.seg label:has(input:checked){background:var(--accent);color:var(--accent-t);font-weight:700}
-.seg label:has(input:focus-visible){outline:2px solid var(--accent)}
+.seg label:has(input:checked){background:var(--pink);font-weight:700}
+.seg label:has(input:focus-visible){outline:3px solid #7cc3ee}
 body:not(.admin) .seg label.inl{display:none}
-body:not(.admin) .seg label.outl{border-radius:10px}
-.hint{color:var(--mute);font-size:13px;margin:8px 0 0}
+body:not(.admin) .seg label.outl{border-radius:15px}
+.hint{color:var(--mute);font-size:13px;margin:10px 0 0}
 body.admin .hint{display:none}
 .rowlist{width:100%;border-collapse:collapse}
-.rowlist th{font-weight:500;color:var(--mute);text-align:left;border-bottom:2px solid var(--accent);padding:6px 6px;white-space:nowrap;font-size:14px}
-.rowlist td{padding:9px 6px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+.rowlist th{font-weight:500;color:var(--mute);text-align:left;border-bottom:2px dashed var(--ink);padding:6px 6px;white-space:nowrap;font-size:14px}
+.rowlist td{padding:9px 6px;border-bottom:1.5px dashed var(--line);font-variant-numeric:tabular-nums}
 .n{text-align:right}
 td.x{white-space:nowrap;text-align:right}
-td.x button{border:0;background:none;color:var(--mute);padding:2px 8px;min-height:32px}
-td.x button.ed{color:var(--accent)}
+td.x button{border:0;background:none;box-shadow:none;color:var(--mute);padding:2px 8px;min-height:32px;transform:none}
+td.x button.ed{color:var(--accent);font-weight:700}
+td.x button:hover{background:var(--soft)}
 body:not(.admin) .x{display:none}
+.who{color:var(--ink);font-size:12px;margin-left:6px;background:var(--blue);border:1.5px solid var(--ink);border-radius:10px;padding:0 7px;white-space:nowrap}
 .empty{text-align:center;color:var(--mute);padding:24px 0}
-.cats .row{display:grid;grid-template-columns:4.5em 1fr 5.5em;gap:10px;align-items:center;padding:4px 0}
-.cats .bar{height:10px;background:var(--bar);border-radius:6px}
-.cats .row span:last-child{text-align:right;font-variant-numeric:tabular-nums}
-dialog{background:var(--paper);color:var(--ink);border:1px solid var(--line);border-radius:16px;padding:18px;width:min(92vw,380px)}
-dialog::backdrop{background:rgba(30,16,60,.55)}
+dialog{background:var(--paper);color:var(--ink);border:3px solid var(--ink);border-radius:var(--wob);padding:18px;width:min(92vw,380px);box-shadow:5px 6px 0 var(--shadow)}
+dialog::backdrop{background:rgba(90,70,54,.38)}
 dialog form{display:grid;gap:10px}
 .msg{color:var(--out);font-size:14px;min-height:1.2em;margin:0}
 .btns{display:flex;gap:8px;justify-content:flex-end}
 @media(max-width:600px){
   .rowlist thead{display:none}
   .rowlist,.rowlist tbody{display:block}
-  .rowlist tr{display:grid;grid-template-columns:auto 1fr auto;grid-template-areas:"d c a" "t t a" "b b x";gap:0 10px;padding:10px 2px;border-bottom:1px solid var(--line)}
+  .rowlist tr{display:grid;grid-template-columns:auto 1fr auto;grid-template-areas:"d c a" "t t a" "b b x";gap:0 10px;padding:10px 2px;border-bottom:1.5px dashed var(--line)}
   .rowlist td{border:0;padding:0}
   td.d{grid-area:d;color:var(--mute)}td.c{grid-area:c;font-weight:700}
   td.t{grid-area:t;color:var(--mute);font-size:14px}
-  td.i,td.o{grid-area:a;font:700 18px "Noto Serif TC",serif;text-align:right;align-self:center}
+  td.i,td.o{grid-area:a;font:700 18px var(--fh);text-align:right;align-self:center}
   td.i:empty,td.o:empty,td.t:empty{display:none}
   td.b{grid-area:b;color:var(--mute);font-size:13px}
   td.b::before{content:"累計 "}
   td.x{grid-area:x}
 }
 @media(min-width:601px){form.add{grid-template-columns:repeat(6,1fr)}.s2{grid-column:span 2}.s3{grid-column:span 3}.sum b{font-size:24px}}
-.tabs{display:flex;gap:6px;margin-bottom:14px}
-.tabs button{flex:1;border-radius:12px}
-.tabs button.on{background:var(--accent);color:var(--accent-t);border-color:var(--accent);font-weight:700}
+.tabs{display:flex;gap:6px;margin-bottom:16px}
+.tabs button{flex:1;padding:8px 4px}
+.tabs button.on{background:var(--yellow);font-weight:700}
 body:not(.admin) .adm-only{display:none}
-.cal{position:relative;width:40px;height:40px;border:1px solid var(--line);border-radius:10px;display:grid;place-items:center;color:var(--accent);background:var(--paper);cursor:pointer}
-.cal:focus-within{outline:2px solid var(--accent);outline-offset:2px}
+.cal{position:relative;width:40px;height:40px;border:2px solid var(--ink);border-radius:var(--wob2);box-shadow:2px 3px 0 var(--ink);display:grid;place-items:center;color:var(--ink);background:var(--paper);cursor:pointer}
+.cal:focus-within{outline:3px solid #7cc3ee;outline-offset:2px}
 .cal svg{width:20px;height:20px}
 .cal input{position:absolute;inset:0;width:100%;height:100%;opacity:0;padding:0;min-height:0;cursor:pointer}
 .th{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}.th h2{margin:0}
 .th button{font-size:14px;min-height:34px;padding:4px 12px}
 .srow{display:grid;grid-template-columns:1fr 7em auto;gap:8px;margin-bottom:8px}
 .srow button{padding:4px 12px;color:var(--out)}
+.mrow{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}.mrow button{color:var(--out);padding:4px 12px}
+.who0{color:var(--mute)}
 .note{color:var(--mute);font-size:13px;margin:0 0 14px}
+.chk{display:flex;align-items:center;gap:8px;font-size:14px;margin:12px 0}.chk input{width:auto;min-height:0;accent-color:var(--accent)}
+.stack{display:grid;gap:10px}
 .yscroll{overflow-x:auto}
-.ytbl{border-collapse:separate;border-spacing:0;min-width:920px;width:100%;font-variant-numeric:tabular-nums;font-size:14px}
-.ytbl th,.ytbl td{padding:9px 10px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line)}
-.ytbl thead th{background:var(--accent);color:var(--accent-t);font-weight:700;cursor:pointer}
-.ytbl th:first-child,.ytbl td:first-child{position:sticky;left:0;z-index:1;text-align:left;min-width:10em;background:var(--paper);border-right:1px solid var(--line)}
-.ytbl thead th:first-child{background:var(--accent);cursor:default}
-.ytbl tr.k td,.ytbl tr.k td:first-child{background:var(--soft);font-weight:700}
-.ytbl tr.e td{font-weight:700}
-.ytbl .all{border-left:2px solid var(--line)}
+.ytbl{border-collapse:separate;border-spacing:0;min-width:480px;width:100%;font-variant-numeric:tabular-nums;font-size:13px}
+.ytbl th,.ytbl td{padding:9px 6px;text-align:right;white-space:normal;border-bottom:1.5px dashed var(--line)}
+.ytbl thead th{background:var(--yellow);color:var(--ink);font-weight:700;line-height:1.3;vertical-align:bottom;border-bottom:2px solid var(--ink)}
+.ytbl th:first-child,.ytbl td:first-child{position:sticky;left:0;z-index:1;text-align:left;min-width:3.4em;background:var(--paper);border-right:1.5px dashed var(--line)}
+.ytbl thead th:first-child{background:var(--yellow)}
+.ytbl tbody td:first-child{cursor:pointer;font-weight:700;color:var(--accent)}
+.ytbl tr.tot td,.ytbl tr.tot td:first-child{background:var(--soft);font-weight:700;border-top:2px solid var(--ink);cursor:default;color:var(--ink)}
+.ytbl td:nth-child(5),.ytbl td:nth-child(6){font-weight:700}
 .yo{display:flex;align-items:center;gap:6px;font-size:14px;white-space:nowrap}.yo input{width:8em}
 .pie{display:flex;align-items:center;gap:18px;flex-wrap:wrap;justify-content:center}
 .pie svg{width:190px;height:190px;flex:none}
 .pie .lg{flex:1 1 220px;min-width:0}
 .lg .it{display:grid;grid-template-columns:14px 1fr auto 3.6em;gap:8px;align-items:center;padding:4px 0;font-size:15px;font-variant-numeric:tabular-nums}
-.lg .sw{width:12px;height:12px;border-radius:50%}
+.lg .sw{width:13px;height:13px;border-radius:50%;border:1.5px solid var(--ink)}
 .lg .it span:nth-child(3),.lg .it span:nth-child(4){text-align:right}
 .lg .it span:nth-child(4){color:var(--mute);font-size:13px}
-.ytbl{min-width:480px;font-size:13px}
-.ytbl th,.ytbl td{padding:9px 6px}
-.ytbl thead th{white-space:normal;line-height:1.3;cursor:default;vertical-align:bottom}
-.ytbl th:first-child,.ytbl td:first-child{min-width:3.4em;text-align:left}
-.ytbl tbody td:first-child{cursor:pointer;font-weight:700;color:var(--accent)}
-.ytbl tr.tot td,.ytbl tr.tot td:first-child{background:var(--soft);font-weight:700;border-top:2px solid var(--accent);cursor:default;color:var(--ink)}
-.ytbl td:nth-child(5),.ytbl td:nth-child(6){font-weight:700}
-.sync{display:block;font-size:12px;color:var(--mute);margin-top:2px}
-.cloud{display:flex;gap:8px;flex-wrap:wrap}
-body.locked #app,body.locked #login{display:none}body:not(.locked) #gate{display:none}
-.who{color:var(--mute);font-size:12px;margin-left:6px;border:1px solid var(--line);border-radius:8px;padding:0 6px;white-space:nowrap}
-.mrow{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}.mrow button{color:var(--out);padding:4px 12px}
-.who0{color:var(--mute)}
+body.locked #app,body.locked #login{display:none}
+body:not(.locked) #gate{display:none}
+#gate{text-align:center}
 </style>
 </head>
 <body class="locked">
 <div class="wrap">
   <div class="top">
-    <div><h1>家用記帳手冊</h1><small class="sync" id="sync" role="status">連線中…</small></div>
+    <div class="brand"><img class="mascot" src="icon-192.png" alt="" width="50" height="50"><div><h1>藍家記帳</h1><small class="sync" id="sync" role="status">連線中…</small></div></div>
     <button id="login" type="button">管理者登入</button>
   </div>
 
@@ -134,7 +145,7 @@ body.locked #app,body.locked #login{display:none}body:not(.locked) #gate{display
     <p class="msg" id="gMsg" style="margin-top:10px"></p>
   </section>
   <div id="app">
-  <div class="tabs adm-only"><button id="tabL" type="button" class="on">月表</button><button id="tabY" type="button">年表</button><button id="tabS" type="button">分類設定</button></div>
+  <div class="tabs adm-only"><button id="tabL" type="button" class="on">月表</button><button id="tabY" type="button">年表</button><button id="tabS" type="button">分類設定</button><button id="tabB" type="button">備份</button></div>
 
   <div id="pgLedger">
   <section class="book nav" aria-label="切換月份">
@@ -213,12 +224,35 @@ body.locked #app,body.locked #login{display:none}body:not(.locked) #gate{display
       <div id="memList"></div>
       <div class="srow"><input type="email" id="mEmail" placeholder="家人 Email" aria-label="家人 Email"><input type="text" id="mName" placeholder="稱呼" maxlength="10" aria-label="稱呼"><button type="button" id="mAdd" style="color:var(--accent)">新增</button></div>
     </section>
-    <section class="book">
-      <h2>雲端資料</h2>
-      <p class="note">第一次使用請按「上傳本機／初始資料」；可重複按，不會產生重複紀錄。</p>
-      <div class="cloud"><button type="button" id="mig">上傳本機／初始資料</button><button type="button" id="exp">匯出 JSON 備份</button><button type="button" id="impBtn">匯入 JSON</button><input type="file" id="imp" accept="application/json,.json" hidden></div>
-    </section>
     <button type="button" data-reset="1">還原預設分類</button>
+  </div>
+
+  <div id="pgBackup" hidden>
+    <section class="book">
+      <h2>匯出 JSON 備份</h2>
+      <p class="note">把所有紀錄、分類設定、年初餘額與家人名單存成一個 JSON 檔，建議每月備份一次。</p>
+      <div class="stack"><button type="button" class="primary" id="exp">匯出 JSON</button><p class="note" id="expInfo" style="margin:0"></p></div>
+    </section>
+    <section class="book">
+      <h2>匯入 JSON</h2>
+      <p class="note">可匯入本系統匯出的備份檔，或單純的紀錄陣列 <code>[{date,type,cat,note,amt}]</code>。</p>
+      <div class="stack">
+        <input type="file" id="imp" accept="application/json,.json" hidden>
+        <button type="button" id="impBtn">選擇 JSON 檔</button>
+        <p class="note" id="impInfo" style="margin:0"></p>
+        <div class="seg" role="radiogroup" aria-label="匯入方式">
+          <label><input type="radio" name="impMode" value="merge" checked><span>合併（略過重複）</span></label>
+          <label><input type="radio" name="impMode" value="replace"><span>取代全部</span></label>
+        </div>
+        <label class="chk" id="impExtraWrap" hidden><input type="checkbox" id="impExtra" checked><span>同時還原分類設定、年初餘額與家人名單</span></label>
+        <button type="button" class="primary" id="impGo" disabled>開始匯入</button>
+      </div>
+    </section>
+    <section class="book">
+      <h2>內建初始資料</h2>
+      <p class="note">第一次用管理者登入且雲端沒有資料時，會自動匯入 2026 年的內建紀錄。若之後想再補匯，可按下面的按鈕（重複匯入不會產生重複紀錄）。</p>
+      <button type="button" id="mig">匯入內建初始資料</button>
+    </section>
   </div>
 </div>
 </div>
@@ -329,7 +363,7 @@ function render(){
   $("sIn").textContent=fmt(tin);$("sOut").textContent=fmt(tout);
   const b=$("sBal");b.textContent=fmt(tin-tout);b.className=tin-tout<0?"out":"in";
   const keys=Object.keys(byCat).sort((a,b)=>byCat[b]-byCat[a]);
-  const PAL=["#6d3fc4","#e0719b","#f2a65a","#4cb8a4","#5b8def","#b79cf5","#e5c34b","#8bc766","#c2415b","#7a6c99","#3aa0c9","#d98cf0"];
+  const PAL=["#ff8fab","#ffd166","#8fd3c1","#7fb8ea","#c3a6f0","#ffb88c","#a5d977","#f28fb5","#9ad0f5","#e5c185","#80cbc4","#d4a5e8"];
   if(!keys.length){$("cats").innerHTML="<div class='empty'>本月尚無支出。</div>";}
   else{
     let off=25,rings="",leg="";
@@ -428,7 +462,7 @@ $("memList").onclick=e=>{
 };
 
 function ask(msg){return new Promise(res=>{const d=$("dAsk");$("aMsg").textContent=msg;const done=v=>{d.onclose=null;$("fAsk").onsubmit=null;$("aNo").onclick=null;if(d.open)d.close();res(v);};$("fAsk").onsubmit=e=>{e.preventDefault();done(true);};$("aNo").onclick=()=>done(false);d.onclose=()=>done(false);d.showModal();});}
-function showTab(n){tab=n;const t={ledger:"pgLedger",year:"pgYear",set:"pgSet"};for(const k in t){$(t[k]).hidden=k!==n;}$("tabL").classList.toggle("on",n==="ledger");$("tabY").classList.toggle("on",n==="year");$("tabS").classList.toggle("on",n==="set");if(n==="set")renderSet();if(n==="year")renderYear();}
+function showTab(n){tab=n;const t={ledger:"pgLedger",year:"pgYear",set:"pgSet",backup:"pgBackup"};for(const k in t){$(t[k]).hidden=k!==n;}[["tabL","ledger"],["tabY","year"],["tabS","set"],["tabB","backup"]].forEach(p=>$(p[0]).classList.toggle("on",n===p[1]));if(n==="set")renderSet();if(n==="year")renderYear();}
 
 /* 分類設定（存到 config/cats，所有裝置即時連動）*/
 function saveCats(){if(admin&&db)setDoc(doc(db,"config","cats"),{out:CATS.out,in:CATS.in}).catch(fail);}
@@ -514,34 +548,88 @@ function lsGet(k){try{return JSON.parse(localStorage.getItem(k));}catch(e){retur
 async function commitRows(items){
   for(let i=0;i<items.length;i+=400){const b=writeBatch(db);items.slice(i,i+400).forEach(x=>b.set(x[0],x[1]));await b.commit();}
 }
-$("mig").onclick=()=>ask("把這個瀏覽器的本機資料（沒有的話用內建初始資料）上傳到雲端？重複上傳不會產生重複紀錄。").then(async ok=>{
-  if(!ok)return;
+let seedChecked=false;
+async function seedCloud(){
+  let rows=lsGet("household-ledger-v1");
+  if(!rows||!rows.length)rows=SEED.concat(SEED2).map((x,i)=>({id:1700000000000+i,date:x[0],type:x[1],cat:x[2],note:x[3],amt:x[4]}));
+  rows.forEach(fixUtil);
+  await commitRows(rows.map(r=>[doc(db,"entries","m_"+r.id),{date:r.date,type:r.type,cat:r.cat,note:r.note||"",amt:r.amt,ts:Number(r.id)||Date.now(),by:uid()}]));
+  const lc=lsGet("household-ledger-cats");if(lc&&lc.out&&lc.in)await setDoc(doc(db,"config","cats"),{out:lc.out,in:lc.in});
+  const lo=lsGet("household-ledger-open");if(lo&&typeof lo==="object")await setDoc(doc(db,"config","open"),{map:lo});
+  return rows.length;
+}
+async function autoSeed(){            /* 管理者第一次登入、雲端沒有資料時，自動匯入一次 */
   try{
-    let rows=lsGet("household-ledger-v1");
-    if(!rows||!rows.length)rows=SEED.concat(SEED2).map((s,i)=>({id:1700000000000+i,date:s[0],type:s[1],cat:s[2],note:s[3],amt:s[4]}));
-    rows.forEach(fixUtil);
-    await commitRows(rows.map(r=>[doc(db,"entries","m_"+r.id),{date:r.date,type:r.type,cat:r.cat,note:r.note||"",amt:r.amt,ts:Number(r.id)||Date.now(),by:uid()}]));
-    const lc=lsGet("household-ledger-cats");if(lc&&lc.out&&lc.in)await setDoc(doc(db,"config","cats"),{out:lc.out,in:lc.in});
-    const lo=lsGet("household-ledger-open");if(lo&&typeof lo==="object")await setDoc(doc(db,"config","open"),{map:lo});
-    setSync("已上傳 "+rows.length+" 筆到雲端");
+    const m=await getDoc(doc(db,"config","meta"));
+    if(m.exists()&&m.data().seeded)return;
+    setSync("第一次使用：匯入初始資料中…");
+    const n=await seedCloud();
+    await setDoc(doc(db,"config","meta"),{seeded:true,at:Date.now()});
+    setSync("已匯入 "+n+" 筆初始資料");
   }catch(e){fail(e);}
+}
+$("mig").onclick=()=>ask("匯入內建的初始資料（2026 年）？重複匯入不會產生重複紀錄。").then(async ok=>{
+  if(!ok)return;
+  try{const n=await seedCloud();setSync("已匯入 "+n+" 筆初始資料");}catch(e){fail(e);}
 });
+$("tabB").onclick=()=>showTab("backup");
+
+/* JSON 匯出 / 匯入 */
+const keyOf=r=>[r.date,r.type,r.cat,r.note||"",r.amt].join("|");
 $("exp").onclick=()=>{
-  const out=data.map(r=>({date:r.date,type:r.type,cat:r.cat,note:r.note||"",amt:r.amt})).sort((a,b)=>a.date<b.date?-1:1);
-  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(out,null,1)],{type:"application/json"}));
-  a.download="家用記帳備份-"+thisYm+".json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+  const obj={app:"藍家記帳",version:2,exportedAt:new Date().toISOString(),
+    entries:data.map(r=>Object.assign({date:r.date,type:r.type,cat:r.cat,note:r.note||"",amt:r.amt,ts:r.ts||0},r.who?{who:r.who}:{})).sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:a.ts-b.ts),
+    categories:CATS,openingBalance:OPEN,
+    members:Object.keys(MEMBERS).map(k=>({email:k,name:MEMBERS[k].name||""}))};
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob([JSON.stringify(obj,null,1)],{type:"application/json"}));
+  a.download="藍家記帳備份-"+now.getFullYear()+"-"+pad(now.getMonth()+1)+"-"+pad(now.getDate())+".json";
+  a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+  $("expInfo").textContent="已匯出 "+obj.entries.length+" 筆紀錄、"+obj.members.length+" 位家人。";
 };
+let pending=null;
 $("impBtn").onclick=()=>$("imp").click();
 $("imp").onchange=async function(){
-  const f=this.files[0];this.value="";if(!f)return;
+  const f=this.files[0];this.value="";pending=null;$("impGo").disabled=true;$("impExtraWrap").hidden=true;if(!f)return;
   try{
-    const arr=JSON.parse(await f.text());
-    const ok=Array.isArray(arr)&&arr.every(r=>r&&/^\d{4}-\d\d-\d\d$/.test(r.date)&&(r.type==="in"||r.type==="out")&&typeof r.cat==="string"&&Number(r.amt)>0);
-    if(!ok){fail("JSON 格式不符");return;}
-    if(!await ask("匯入 "+arr.length+" 筆紀錄到雲端？（會新增，不會覆蓋現有資料）"))return;
+    const j=JSON.parse(await f.text()),obj=j&&!Array.isArray(j)?j:{};
+    const arr=Array.isArray(j)?j:Array.isArray(obj.entries)?obj.entries:null;
+    if(!arr)throw new Error("找不到紀錄（entries）");
+    const good=arr.filter(r=>r&&/^\d{4}-\d\d-\d\d$/.test(r.date)&&(r.type==="in"||r.type==="out")&&typeof r.cat==="string"&&Number(r.amt)>0);
+    const cats=obj.categories&&Array.isArray(obj.categories.out)&&Array.isArray(obj.categories.in)?obj.categories:null;
+    const open=obj.openingBalance&&typeof obj.openingBalance==="object"?obj.openingBalance:null;
+    const mem=Array.isArray(obj.members)?obj.members:[];
+    pending={entries:good,cats:cats,open:open,members:mem};
+    const extra=[cats?"分類設定":"",open?"年初餘額":"",mem.length?"家人 "+mem.length+" 位":""].filter(Boolean);
+    $("impInfo").textContent="「"+f.name+"」：有效紀錄 "+good.length+" 筆"+(arr.length>good.length?"（"+(arr.length-good.length)+" 筆格式不符，將略過）":"")+(extra.length?"；另含 "+extra.join("、"):"")+"。";
+    $("impExtraWrap").hidden=!extra.length;
+    $("impGo").disabled=!good.length&&!extra.length;
+  }catch(e){$("impInfo").textContent="讀取失敗："+e.message;}
+};
+$("impGo").onclick=async()=>{
+  if(!pending)return;
+  const mode=document.querySelector("input[name=impMode]:checked").value;
+  const msg=mode==="replace"?"取代全部：會先刪除雲端目前的 "+data.length+" 筆紀錄，再匯入 "+pending.entries.length+" 筆。此動作無法復原，確定？":"合併匯入 "+pending.entries.length+" 筆紀錄（已存在的相同紀錄會略過）。確定？";
+  if(!await ask(msg))return;
+  try{
+    setSync("匯入中…");
+    let list=pending.entries;
+    if(mode==="replace"){
+      const old=data.slice();
+      for(let i=0;i<old.length;i+=400){const b=writeBatch(db);old.slice(i,i+400).forEach(r=>b.delete(doc(db,"entries",r.id)));await b.commit();}
+    }else{
+      const have={};data.forEach(r=>{const k=keyOf(r);have[k]=(have[k]||0)+1;});
+      list=list.filter(r=>{const k=keyOf({date:r.date,type:r.type,cat:r.cat,note:r.note||"",amt:Math.round(Number(r.amt))});if(have[k]>0){have[k]--;return false;}return true;});
+    }
     const t=Date.now();
-    await commitRows(arr.map((r,i)=>[doc(collection(db,"entries")),{date:r.date,type:r.type,cat:r.cat,note:String(r.note||"").slice(0,40),amt:Math.round(Number(r.amt)),ts:t+i,by:uid()}]));
-    setSync("已匯入 "+arr.length+" 筆");
+    await commitRows(list.map((r,i)=>[doc(collection(db,"entries")),Object.assign({date:r.date,type:r.type,cat:String(r.cat).slice(0,30),note:String(r.note||"").slice(0,40),amt:Math.round(Number(r.amt)),ts:Number(r.ts)>0?Math.round(Number(r.ts)):t+i,by:uid()},r.who?{who:String(r.who).slice(0,80)}:{})]));
+    if($("impExtra").checked){
+      if(pending.cats)await setDoc(doc(db,"config","cats"),{out:pending.cats.out,in:pending.cats.in});
+      if(pending.open)await setDoc(doc(db,"config","open"),{map:pending.open});
+      for(const m of pending.members){const em=String(m&&m.email||"").trim().toLowerCase();if(/^\S+@\S+\.\S+$/.test(em)&&em!==ADMIN_EMAIL.toLowerCase())await setDoc(doc(db,"members",em),{email:em,name:String(m.name||"").slice(0,10),addedAt:Date.now()});}
+    }
+    setSync("匯入完成：新增 "+list.length+" 筆紀錄");
+    $("impInfo").textContent="匯入完成。";pending=null;$("impGo").disabled=true;$("impExtraWrap").hidden=true;
   }catch(e){fail(e);}
 };
 
@@ -551,6 +639,7 @@ function listen(){
   unsubs.push(onSnapshot(collection(db,"entries"),{includeMetadataChanges:true},snap=>{
     data=snap.docs.map(d=>Object.assign({id:d.id},d.data()));
     setSync(snap.metadata.hasPendingWrites?"同步中…":snap.metadata.fromCache?"離線（使用本機快取）":"● 已連線・即時同步");
+    if(admin&&!seedChecked&&!snap.metadata.fromCache){seedChecked=true;if(snap.empty)autoSeed();}
     refresh();
   },fail));
   unsubs.push(onSnapshot(doc(db,"config","cats"),snap=>{
@@ -584,7 +673,7 @@ if(FIREBASE_CONFIG.apiKey.indexOf("YOUR")===0){
       .finally(()=>history.replaceState(null,"",location.pathname));
   }
   onAuthStateChanged(auth,async user=>{
-    unsubs.forEach(f=>f());unsubs=[];started=false;
+    unsubs.forEach(f=>f());unsubs=[];started=false;seedChecked=false;
     if(!user||user.isAnonymous){
       if(user)signOut(auth);
       myEmail="";admin=false;data=[];MEMBERS={};locked(true);applyAdmin();setSync("請先登入");return;
@@ -597,6 +686,7 @@ if(FIREBASE_CONFIG.apiKey.indexOf("YOUR")===0){
     myEmail=em;admin=isAdmin;$("gMsg").textContent="";locked(false);applyAdmin();listen();
   });
 }
+if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw.js").catch(()=>{});
 catOpts($("fCat"),"out");render();
 </script>
 </body>

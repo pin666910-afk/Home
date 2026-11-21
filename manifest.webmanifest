@@ -1,0 +1,16 @@
+{
+  "name": "藍家記帳",
+  "short_name": "藍家記帳",
+  "description": "藍家的家用記帳手冊",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fff4e0",
+  "theme_color": "#9fd3f0",
+  "lang": "zh-Hant",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
