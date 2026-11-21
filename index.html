@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>家用記帳手冊</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<style>
+:root{--bg:#f3eefb;--paper:#fff;--line:#e0d5f2;--ink:#2a1f45;--mute:#7a6c99;--in:#2c8a68;--out:#c2415b;--accent:#6d3fc4;--accent-t:#fff;--soft:#ece3fa;--bar:#c9b2f0;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#150f24;--paper:#211a38;--line:#372c58;--ink:#ece6fa;--mute:#a498c4;--in:#6fd6ab;--out:#f28ba0;--accent:#b79cf5;--accent-t:#1a1030;--soft:#2c2250;--bar:#5a3f99;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#150f24;--paper:#211a38;--line:#372c58;--ink:#ece6fa;--mute:#a498c4;--in:#6fd6ab;--out:#f28ba0;--accent:#b79cf5;--accent-t:#1a1030;--soft:#2c2250;--bar:#5a3f99;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 "Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif}
+.wrap{max-width:760px;margin:0 auto;padding:14px 14px 48px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:4px 0 14px}
+h1{font:700 24px/1.2 "Noto Serif TC",serif;margin:0;letter-spacing:.06em}
+h2{font:700 17px "Noto Serif TC",serif;margin:0 0 10px}
+.book{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:14px}
+.nav{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
+.nav .ym{font:700 22px "Noto Serif TC",serif;min-width:7.5em;text-align:center}
+button,input,select{font:inherit;color:var(--ink)}
+button{cursor:pointer;border:1px solid var(--line);background:var(--paper);border-radius:10px;padding:8px 14px;min-height:40px}
+button:hover{border-color:var(--accent)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.primary{background:var(--accent);color:var(--accent-t);border-color:var(--accent);font-weight:700}
+#login{white-space:nowrap;font-size:14px;padding:6px 12px;min-height:36px}
+body.admin #login{background:var(--soft);border-color:var(--accent);color:var(--accent);font-weight:700}
+input,select{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px 10px;min-height:42px;min-width:0;width:100%}
+.sum{display:grid;grid-template-columns:repeat(3,1fr);text-align:center;background:linear-gradient(135deg,var(--soft),var(--paper))}
+.sum div{padding:2px 6px}.sum div+div{border-left:1px solid var(--line)}
+.sum small{color:var(--mute);display:block}
+.sum b{font:700 20px "Noto Serif TC",serif;font-variant-numeric:tabular-nums}
+.in{color:var(--in)}.out{color:var(--out)}
+form.add{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.s2{grid-column:span 2}
+.seg{display:flex}.seg label{flex:1;text-align:center;border:1px solid var(--line);padding:9px 0;cursor:pointer}
+.seg label:first-child{border-radius:10px 0 0 10px}.seg label:last-child{border-radius:0 10px 10px 0;border-left:0}
+.seg input{position:absolute;opacity:0;width:1px;min-height:0}
+.seg label:has(input:checked){background:var(--accent);color:var(--accent-t);font-weight:700}
+.seg label:has(input:focus-visible){outline:2px solid var(--accent)}
+body:not(.admin) .seg label.inl{display:none}
+body:not(.admin) .seg label.outl{border-radius:10px}
+.hint{color:var(--mute);font-size:13px;margin:8px 0 0}
+body.admin .hint{display:none}
+.rowlist{width:100%;border-collapse:collapse}
+.rowlist th{font-weight:500;color:var(--mute);text-align:left;border-bottom:2px solid var(--accent);padding:6px 6px;white-space:nowrap;font-size:14px}
+.rowlist td{padding:9px 6px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+.n{text-align:right}
+td.x{white-space:nowrap;text-align:right}
+td.x button{border:0;background:none;color:var(--mute);padding:2px 8px;min-height:32px}
+td.x button.ed{color:var(--accent)}
+body:not(.admin) .x{display:none}
+.empty{text-align:center;color:var(--mute);padding:24px 0}
+.cats .row{display:grid;grid-template-columns:4.5em 1fr 5.5em;gap:10px;align-items:center;padding:4px 0}
+.cats .bar{height:10px;background:var(--bar);border-radius:6px}
+.cats .row span:last-child{text-align:right;font-variant-numeric:tabular-nums}
+dialog{background:var(--paper);color:var(--ink);border:1px solid var(--line);border-radius:16px;padding:18px;width:min(92vw,380px)}
+dialog::backdrop{background:rgba(30,16,60,.55)}
+dialog form{display:grid;gap:10px}
+.msg{color:var(--out);font-size:14px;min-height:1.2em;margin:0}
+.btns{display:flex;gap:8px;justify-content:flex-end}
+@media(max-width:600px){
+  .rowlist thead{display:none}
+  .rowlist,.rowlist tbody{display:block}
+  .rowlist tr{display:grid;grid-template-columns:auto 1fr auto;grid-template-areas:"d c a" "t t a" "b b x";gap:0 10px;padding:10px 2px;border-bottom:1px solid var(--line)}
+  .rowlist td{border:0;padding:0}
+  td.d{grid-area:d;color:var(--mute)}td.c{grid-area:c;font-weight:700}
+  td.t{grid-area:t;color:var(--mute);font-size:14px}
+  td.i,td.o{grid-area:a;font:700 18px "Noto Serif TC",serif;text-align:right;align-self:center}
+  td.i:empty,td.o:empty,td.t:empty{display:none}
+  td.b{grid-area:b;color:var(--mute);font-size:13px}
+  td.b::before{content:"累計 "}
+  td.x{grid-area:x}
+}
+@media(min-width:601px){form.add{grid-template-columns:repeat(6,1fr)}.s2{grid-column:span 2}.s3{grid-column:span 3}.sum b{font-size:24px}}
+.tabs{display:flex;gap:6px;margin-bottom:14px}
+.tabs button{flex:1;border-radius:12px}
+.tabs button.on{background:var(--accent);color:var(--accent-t);border-color:var(--accent);font-weight:700}
+body:not(.admin) .adm-only{display:none}
+.cal{position:relative;width:40px;height:40px;border:1px solid var(--line);border-radius:10px;display:grid;place-items:center;color:var(--accent);background:var(--paper);cursor:pointer}
+.cal:focus-within{outline:2px solid var(--accent);outline-offset:2px}
+.cal svg{width:20px;height:20px}
+.cal input{position:absolute;inset:0;width:100%;height:100%;opacity:0;padding:0;min-height:0;cursor:pointer}
+.th{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}.th h2{margin:0}
+.th button{font-size:14px;min-height:34px;padding:4px 12px}
+.srow{display:grid;grid-template-columns:1fr 7em auto;gap:8px;margin-bottom:8px}
+.srow button{padding:4px 12px;color:var(--out)}
+.note{color:var(--mute);font-size:13px;margin:0 0 14px}
+.yscroll{overflow-x:auto}
+.ytbl{border-collapse:separate;border-spacing:0;min-width:920px;width:100%;font-variant-numeric:tabular-nums;font-size:14px}
+.ytbl th,.ytbl td{padding:9px 10px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line)}
+.ytbl thead th{background:var(--accent);color:var(--accent-t);font-weight:700;cursor:pointer}
+.ytbl th:first-child,.ytbl td:first-child{position:sticky;left:0;z-index:1;text-align:left;min-width:10em;background:var(--paper);border-right:1px solid var(--line)}
+.ytbl thead th:first-child{background:var(--accent);cursor:default}
+.ytbl tr.k td,.ytbl tr.k td:first-child{background:var(--soft);font-weight:700}
+.ytbl tr.e td{font-weight:700}
+.ytbl .all{border-left:2px solid var(--line)}
+.yo{display:flex;align-items:center;gap:6px;font-size:14px;white-space:nowrap}.yo input{width:8em}
+.pie{display:flex;align-items:center;gap:18px;flex-wrap:wrap;justify-content:center}
+.pie svg{width:190px;height:190px;flex:none}
+.pie .lg{flex:1 1 220px;min-width:0}
+.lg .it{display:grid;grid-template-columns:14px 1fr auto 3.6em;gap:8px;align-items:center;padding:4px 0;font-size:15px;font-variant-numeric:tabular-nums}
+.lg .sw{width:12px;height:12px;border-radius:50%}
+.lg .it span:nth-child(3),.lg .it span:nth-child(4){text-align:right}
+.lg .it span:nth-child(4){color:var(--mute);font-size:13px}
+.ytbl{min-width:480px;font-size:13px}
+.ytbl th,.ytbl td{padding:9px 6px}
+.ytbl thead th{white-space:normal;line-height:1.3;cursor:default;vertical-align:bottom}
+.ytbl th:first-child,.ytbl td:first-child{min-width:3.4em;text-align:left}
+.ytbl tbody td:first-child{cursor:pointer;font-weight:700;color:var(--accent)}
+.ytbl tr.tot td,.ytbl tr.tot td:first-child{background:var(--soft);font-weight:700;border-top:2px solid var(--accent);cursor:default;color:var(--ink)}
+.ytbl td:nth-child(5),.ytbl td:nth-child(6){font-weight:700}
+.sync{display:block;font-size:12px;color:var(--mute);margin-top:2px}
+.cloud{display:flex;gap:8px;flex-wrap:wrap}
+body.locked #app,body.locked #login{display:none}body:not(.locked) #gate{display:none}
+.who{color:var(--mute);font-size:12px;margin-left:6px;border:1px solid var(--line);border-radius:8px;padding:0 6px;white-space:nowrap}
+.mrow{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}.mrow button{color:var(--out);padding:4px 12px}
+.who0{color:var(--mute)}
+</style>
+</head>
+<body class="locked">
+<div class="wrap">
+  <div class="top">
+    <div><h1>家用記帳手冊</h1><small class="sync" id="sync" role="status">連線中…</small></div>
+    <button id="login" type="button">管理者登入</button>
+  </div>
+
+  <section class="book" id="gate">
+    <h2>請先登入</h2>
+    <p class="note">輸入管理者幫你加入的 Email，系統會寄一封登入連結到信箱，點連結即可登入，不用記密碼。</p>
+    <button class="primary" id="gLogin" type="button">登入</button>
+    <p class="msg" id="gMsg" style="margin-top:10px"></p>
+  </section>
+  <div id="app">
+  <div class="tabs adm-only"><button id="tabL" type="button" class="on">月表</button><button id="tabY" type="button">年表</button><button id="tabS" type="button">分類設定</button></div>
+
+  <div id="pgLedger">
+  <section class="book nav" aria-label="切換月份">
+    <button id="prev" aria-label="上個月">‹</button>
+    <div class="ym" id="ymLabel"></div>
+    <button id="next" aria-label="下個月">›</button>
+    <label class="cal" title="選擇月份"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/></svg><input type="month" id="ymPick" aria-label="選擇月份"></label>
+  </section>
+
+  <section class="book sum" aria-label="本月總結">
+    <div><small>收入</small><b class="in" id="sIn">0</b></div>
+    <div><small>支出</small><b class="out" id="sOut">0</b></div>
+    <div><small>結餘</small><b id="sBal">0</b></div>
+  </section>
+
+  <section class="book">
+    <h2>新增一筆</h2>
+    <form class="add" id="f">
+      <div class="seg s2" role="radiogroup" aria-label="類型">
+        <label class="outl"><input type="radio" name="type" value="out" checked><span>支出</span></label>
+        <label class="inl"><input type="radio" name="type" value="in"><span>收入</span></label>
+      </div>
+      <input class="s2" type="date" id="fDate" required aria-label="日期">
+      <select class="s2" id="fCat" aria-label="分類"></select>
+      <input class="s3" type="text" id="fNote" placeholder="備註（例如：全聯採買）" maxlength="40" aria-label="備註">
+      <input class="s2" type="number" inputmode="numeric" id="fAmt" placeholder="金額" min="1" step="1" required aria-label="金額">
+      <button class="primary s2" type="submit" style="grid-column:1/-1">記一筆</button>
+    </form>
+    <p class="hint">家人登入後只能新增支出；新增收入、編輯與刪除需管理者登入。</p>
+  </section>
+
+  <section class="book">
+    <div class="th"><h2 id="tblTitle">月表</h2><button id="fill" class="adm-only" type="button">帶入固定收支</button></div>
+    <table class="rowlist">
+      <thead><tr><th>日期</th><th>分類</th><th>備註</th><th class="n">收入</th><th class="n">支出</th><th class="n">累計結餘</th><th class="x"></th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+    <div class="empty" id="empty" hidden>這個月還沒有紀錄，從上方記下第一筆吧。</div>
+  </section>
+
+  <section class="book cats">
+    <h2>本月支出分類</h2>
+    <div id="cats"></div>
+  </section>
+  </div>
+
+  <div id="pgYear" hidden>
+    <section class="book nav" aria-label="切換年度">
+      <button id="yPrev" aria-label="上一年">‹</button>
+      <div class="ym" id="yLabel"></div>
+      <button id="yNext" aria-label="下一年">›</button>
+    </section>
+    <section class="book">
+      <div class="th"><h2>年表（1～12 月）</h2><label class="yo">年初餘額 <input type="number" id="yOpen" inputmode="numeric" aria-label="年初餘額"></label></div>
+      <div class="yscroll"><table class="ytbl"><thead id="yHead"></thead><tbody id="yBody"></tbody></table></div>
+      <p class="note" style="margin:10px 0 0">每月期初餘額＝上月期末餘額；1 月請在右上方設定年初餘額。點左側月份可跳到該月月表。尚無紀錄的月份顯示「–」。</p>
+    </section>
+  </div>
+
+  <div id="pgSet" hidden>
+    <section class="book">
+      <h2>支出分類與預設金額</h2>
+      <p class="note">選擇分類時會自動帶入預設金額；金額留空代表每月不固定。</p>
+      <div id="set_out"></div>
+      <button type="button" data-add="out">＋ 新增支出項目</button>
+    </section>
+    <section class="book">
+      <h2>收入分類與預設金額</h2>
+      <div id="set_in"></div>
+      <button type="button" data-add="in">＋ 新增收入項目</button>
+    </section>
+    <p class="note">修改分類名稱時，可選擇是否同步更新所有舊紀錄；所有裝置會即時看到變更。</p>
+    <section class="book">
+      <h2>家人帳號</h2>
+      <p class="note">只有在這裡加入的 Email 才能登入並記帳（家人只能新增支出）。家人用 Email 登入連結登入，不需要密碼。</p>
+      <div id="memList"></div>
+      <div class="srow"><input type="email" id="mEmail" placeholder="家人 Email" aria-label="家人 Email"><input type="text" id="mName" placeholder="稱呼" maxlength="10" aria-label="稱呼"><button type="button" id="mAdd" style="color:var(--accent)">新增</button></div>
+    </section>
+    <section class="book">
+      <h2>雲端資料</h2>
+      <p class="note">第一次使用請按「上傳本機／初始資料」；可重複按，不會產生重複紀錄。</p>
+      <div class="cloud"><button type="button" id="mig">上傳本機／初始資料</button><button type="button" id="exp">匯出 JSON 備份</button><button type="button" id="impBtn">匯入 JSON</button><input type="file" id="imp" accept="application/json,.json" hidden></div>
+    </section>
+    <button type="button" data-reset="1">還原預設分類</button>
+  </div>
+</div>
+</div>
+
+<dialog id="dAsk">
+  <form id="fAsk">
+    <p id="aMsg" style="margin:0;font-weight:700"></p>
+    <div class="btns"><button type="button" id="aNo">取消</button><button class="primary" type="submit">確定</button></div>
+  </form>
+</dialog>
+
+<dialog id="dLogin">
+  <form id="fLogin">
+    <h2>登入</h2>
+    <input type="email" id="em" placeholder="Email" autocomplete="username" required>
+    <button type="button" class="primary" id="lLink">寄送登入連結到信箱</button>
+    <p class="note" style="margin:0">管理者也可以用密碼登入：</p>
+    <input type="password" id="pw" placeholder="密碼（僅管理者）" autocomplete="current-password">
+    <p class="msg" id="lMsg"></p>
+    <div class="btns"><button type="button" id="lCancel">取消</button><button type="submit">密碼登入</button></div>
+  </form>
+</dialog>
+
+<dialog id="dEdit">
+  <form id="fEdit">
+    <h2>編輯紀錄</h2>
+    <select id="eType" aria-label="類型"><option value="out">支出</option><option value="in">收入</option></select>
+    <input type="date" id="eDate" required aria-label="日期">
+    <select id="eCat" aria-label="分類"></select>
+    <input type="text" id="eNote" maxlength="40" placeholder="備註" aria-label="備註">
+    <input type="number" inputmode="numeric" id="eAmt" min="1" step="1" required aria-label="金額">
+    <div class="btns"><button type="button" id="eCancel">取消</button><button class="primary" type="submit">儲存變更</button></div>
+  </form>
+</dialog>
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import {getAuth,onAuthStateChanged,signInWithEmailAndPassword,signOut,sendSignInLinkToEmail,isSignInWithEmailLink,signInWithEmailLink} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import {initializeFirestore,persistentLocalCache,persistentMultipleTabManager,collection,doc,onSnapshot,setDoc,addDoc,updateDoc,deleteDoc,writeBatch,getDoc,terminate,clearIndexedDbPersistence} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+/* ====== ① 這裡填入你的 Firebase 設定（Firebase 控制台 → 專案設定 → 你的應用程式）====== */
+const FIREBASE_CONFIG={
+  apiKey:"AIzaSyBgYbywXyxfM9kaP4FM7xjm2bQn8kJ58Xk",
+  authDomain:"pptestpp-f28f6.firebaseapp.com",
+  projectId:"pptestpp-f28f6",
+  appId:"1:554556834376:web:23a63d7f7df90152a7ce7d"
+};
+/* ====== ② 管理者的 Email（需與 Firebase Authentication 建立的帳號、firestore.rules 內相同）====== */
+const ADMIN_EMAIL="pin910910910666@gmail.com";
+/* ================================================================================== */
+
+const DEF={out:[{n:"房貸1",a:16454},{n:"房貸2",a:9361},{n:"房貸保險",a:1142},{n:"社區管理費",a:2310},{n:"家用買菜金",a:15000},{n:"網路費ADSL",a:1403},{n:"水費",a:0},{n:"電費",a:0},{n:"瓦斯費",a:830},{n:"日用購物與雜支",a:0},{n:"寵物用品",a:0},{n:"電話費",a:0},{n:"其他",a:0}],in:[{n:"薪資",a:60000},{n:"獎金",a:0},{n:"利息",a:0},{n:"其他",a:0}]};
+const SEED=[["2026-01-01","in","薪資","",66000],["2026-01-01","out","房貸1","",16454],["2026-01-01","out","房貸2","",9361],["2026-01-01","out","房貸保險","",1142],["2026-01-07","out","家用買菜金","",15000],["2026-01-07","out","社區管理費","",2310],["2026-01-30","out","水電瓦斯","電費",2593],["2026-01-30","out","日用購物與雜支","曬衣架",2600],["2026-01-30","out","日用購物與雜支","雞蛋(10斤)",550],["2026-01-30","out","日用購物與雜支","紅包",2000],["2026-01-30","out","水電瓦斯","瓦斯 3桶",3000],["2026-01-30","out","網路費ADSL","",1399],["2026-01-30","out","電話費","",148],["2026-01-30","out","寵物用品","狗尿布",506],["2026-01-30","out","寵物用品","狗飼料",4160],["2026-01-30","out","日用購物與雜支","家樂福",1297],["2026-01-30","out","日用購物與雜支","衛生紙",1132],["2026-01-30","out","日用購物與雜支","好市多",2481],["2026-01-30","out","水電瓦斯","水費",933],["2026-02-01","in","薪資","",70800],["2026-02-01","out","房貸1","",16454],["2026-02-01","out","房貸2","",9361],["2026-02-01","out","房貸保險","",1142],["2026-02-07","out","家用買菜金","",18000],["2026-02-07","out","社區管理費","",2310],["2026-02-28","out","網路費ADSL","",1399],["2026-02-28","out","電話費","",143],["2026-02-28","out","水電瓦斯","水費",933],["2026-02-28","out","寵物用品","寵物尿布M",268],["2026-02-28","out","日用購物與雜支","衛生紙",1132],["2026-02-28","out","寵物用品","飼料",2000],["2026-02-28","out","水電瓦斯","瓦斯 1桶",1000],["2026-02-28","out","日用購物與雜支","廚房紙巾",1358],["2026-02-28","out","日用購物與雜支","洗碗精",584],["2026-02-28","out","日用購物與雜支","牙膏",408],["2026-02-28","out","水電瓦斯","瓦斯費 2桶",2000],["2026-02-28","out","日用購物與雜支","口罩",245],["2026-02-28","out","日用購物與雜支","過年清潔用品",2181],["2026-02-28","out","日用購物與雜支","鍋子",1199],["2026-03-01","in","薪資","",60000],["2026-03-01","out","房貸1","",16454],["2026-03-01","out","房貸2","",9361],["2026-03-01","out","房貸保險","",1142],["2026-03-07","out","家用買菜金","",15000],["2026-03-07","out","社區管理費","",2310],["2026-03-28","out","網路費ADSL","",1399],["2026-03-30","out","水電瓦斯","電費",5134],["2026-03-30","out","水電瓦斯","水費",1045],["2026-03-30","out","日用購物與雜支","玄米油",319],["2026-03-30","out","日用購物與雜支","衛生紙",1132],["2026-03-30","out","水電瓦斯","瓦斯 4桶",3770],["2026-03-30","out","電話費","",100],["2026-03-30","out","日用購物與雜支","廚房紙巾",1358],["2026-03-30","out","日用購物與雜支","垃圾袋",300],["2026-03-30","out","寵物用品","狗飼料",7981],["2026-04-01","in","薪資","",60000],["2026-04-01","out","房貸1","",16454],["2026-04-01","out","房貸2","",9361],["2026-04-01","out","房貸保險","",1142],["2026-04-07","out","家用買菜金","",18000],["2026-04-07","out","社區管理費","",2310],["2026-04-30","out","日用購物與雜支","洗髮精",498],["2026-04-30","out","日用購物與雜支","關山米",599],["2026-04-30","out","日用購物與雜支","衛生紙",1132],["2026-04-30","out","水電瓦斯","電費",4793],["2026-04-30","out","水電瓦斯","瓦斯 3桶",3000],["2026-04-30","out","網路費ADSL","",1399],["2026-04-30","out","電話費","",100],["2026-04-30","out","寵物用品","狗尿布7包",402],["2026-04-30","out","寵物用品","一錠除+犬心保",3000],["2026-04-30","out","日用購物與雜支","益節(媽骨頭藥)",2498],["2026-05-01","in","薪資","",60000],["2026-05-01","out","房貸1","",16454],["2026-05-01","out","房貸2","",9361],["2026-05-01","out","房貸保險","",1142],["2026-05-07","out","家用買菜金","",15000],["2026-05-07","out","社區管理費","",2310],["2026-05-08","out","日用購物與雜支","母親節",7160],["2026-05-14","out","日用購物與雜支","淨水器",798],["2026-05-19","out","日用購物與雜支","鍋子 2只",1120],["2026-05-23","out","水電瓦斯","瓦斯 3桶",3060],["2026-05-23","out","日用購物與雜支","好市多",6437],["2026-05-24","out","日用購物與雜支","洗衣精 4瓶",557],["2026-05-30","out","網路費ADSL","",1399],["2026-05-30","out","電話費","",126],["2026-05-30","out","水電瓦斯","水費",974],["2026-05-30","out","寵物用品","狗飼料",2000],["2026-05-30","out","日用購物與雜支","濕紙巾",580],["2026-06-01","in","薪資","",60000],["2026-06-01","out","水電瓦斯","電費",6700],["2026-06-01","out","房貸1","",16454],["2026-06-01","out","房貸2","",9361],["2026-06-01","out","房貸保險","",1142],["2026-06-02","out","日用購物與雜支","清洗冷氣20005台/清洗衣機3600",13600],["2026-06-05","out","家用買菜金","",15000],["2026-06-06","out","社區管理費","",2310],["2026-06-07","out","網路費ADSL","",1399],["2026-06-08","out","電話費","",141],["2026-06-09","out","日用購物與雜支","衛生紙",3301],["2026-06-30","out","日用購物與雜支","廚房紙巾",3594],["2026-06-30","out","寵物用品","飼料",2160],["2026-06-30","out","日用購物與雜支","媽機票",11236],["2026-06-30","out","日用購物與雜支","濕紙巾",580],["2026-06-30","out","日用購物與雜支","濾水器",990],["2026-06-30","out","日用購物與雜支","牙刷",168],["2026-06-01","out","水電瓦斯","瓦斯2",1560],["2026-07-01","in","薪資","",60000],["2026-07-01","out","水電瓦斯","水費",1048],["2026-07-01","out","水電瓦斯","瓦斯 1桶",780],["2026-07-01","out","家用買菜金","",15000],["2026-07-01","out","社區管理費","",2310],["2026-07-01","out","網路費ADSL","",1403],["2026-07-01","out","電話費","",180],["2026-07-01","out","房貸1","",16454],["2026-07-01","out","房貸2","",9361],["2026-07-01","out","房貸保險","",1142],["2026-07-09","out","日用購物與雜支","玄米油",319],["2026-07-30","out","日用購物與雜支","漂白水",389],["2026-07-30","out","寵物用品","狗洗耳液",275],["2026-07-30","out","寵物用品","狗飼料",2000],["2026-07-30","out","日用購物與雜支","濕紙巾",1180],["2026-07-30","out","日用購物與雜支","延長線更換",2379],["2026-07-30","out","日用購物與雜支","內鍋",3399],["2026-07-01","out","水電瓦斯","瓦斯 1桶",780],["2026-08-01","in","薪資","",60000],["2026-08-01","out","房貸1","",16454],["2026-08-01","out","房貸2","",9361],["2026-08-01","out","房貸保險","",1142],["2026-08-05","out","家用買菜金","",18000],["2026-08-07","out","社區管理費","",2310],["2026-08-30","out","網路費ADSL","",1442],["2026-08-30","out","電話費","",151],["2026-08-30","out","寵物用品","狗尿布",739],["2026-08-30","out","寵物用品","狗飼料",2166],["2026-08-30","out","寵物用品","一錠除X2犬新寶",2800],["2026-08-30","out","日用購物與雜支","烘焙紙+玄米油",718],["2026-08-30","out","日用購物與雜支","大全聯",4000],["2026-08-30","out","水電瓦斯","瓦斯 2桶",1600],["2026-09-01","in","薪資","",60000],["2026-09-01","out","房貸1","",16454],["2026-09-01","out","房貸2","",9361],["2026-09-01","out","房貸保險","",1142],["2026-09-04","out","家用買菜金","",15000],["2026-09-04","out","社區管理費","",2310],["2026-09-04","out","網路費ADSL","",1403],["2026-09-04","out","水電瓦斯","電費 6188(1F.3F)+3782(2F.4F)",9970],["2026-09-04","out","日用購物與雜支","益節12罐口嚼碇 729/1罐",8748],["2026-09-11","out","電話費","",200],["2026-09-12","out","日用購物與雜支","濕紙巾",1218],["2026-09-22","out","房貸保險","地震險",3334],["2026-09-22","out","家用買菜金","雞蛋(10斤)",1000],["2026-09-22","out","水電瓦斯","瓦斯2",1600],["2026-09-22","out","日用購物與雜支","媽-住宿租車錢",9700],["2026-09-22","out","日用購物與雜支","大潤發1513.牙膏405",2268],["2026-10-01","in","薪資","",60000],["2026-10-01","out","房貸1","",16454],["2026-10-01","out","房貸2","",9361],["2026-10-01","out","房貸保險","",1142],["2026-10-01","out","家用買菜金","",15000],["2026-10-01","out","社區管理費","",2310],["2026-10-01","out","網路費ADSL","",1403],["2026-10-04","out","日用購物與雜支","衛生紙4箱",2547],["2026-10-10","out","家用買菜金","雞蛋",500],["2026-10-10","out","水電瓦斯","水費1071",1071],["2026-10-10","out","網路費ADSL","中華電信1442",1442],["2026-10-10","out","電話費","",181],["2026-10-10","out","日用購物與雜支","好市多",9212],["2026-10-10","out","寵物用品","狗飼料+除臭液",2686],["2026-10-10","out","其他","地價稅",465],["2026-10-10","out","日用購物與雜支","米",756],["2026-10-10","out","水電瓦斯","2桶",1600],["2026-11-01","in","薪資","",60000],["2026-11-01","out","房貸1","",16454],["2026-11-01","out","房貸2","",9361],["2026-11-01","out","房貸保險","",1142],["2026-11-01","out","家用買菜金","",15000],["2026-11-01","out","社區管理費","",2310],["2026-11-01","out","網路費ADSL","",1403],["2026-11-10","out","日用購物與雜支","濕紙巾",1240],["2026-11-11","out","日用購物與雜支","電鈴",479],["2026-11-11","out","日用購物與雜支","米",394],["2026-11-11","out","日用購物與雜支","蛋",500]];
+const SEED2=[["2026-11-16","out","日用購物與雜支","pizza 藍媽慶生",2089],["2026-11-16","out","日用購物與雜支","炸雞 藍媽慶生",950],["2026-11-16","out","水電瓦斯","瓦斯",830],["2026-11-17","out","水電瓦斯","電費",5476]];
+const clone=o=>JSON.parse(JSON.stringify(o));
+const $=id=>document.getElementById(id);
+const pad=n=>String(n).padStart(2,"0");
+const fmt=n=>n.toLocaleString("zh-TW");
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+let CATS=clone(DEF),OPEN={2026:36862},data=[],admin=false,editId=null,tab="ledger",lastYm=null,started=false,db=null,auth=null,MEMBERS={},unsubs=[],myEmail="";
+const now=new Date(),thisYm=now.getFullYear()+"-"+pad(now.getMonth()+1);
+let ym=thisYm,yr=now.getFullYear();
+
+function setSync(t,bad){const e=$("sync");e.textContent=t;e.style.color=bad?"var(--out)":"";}
+function fail(e){console.error(e);setSync("操作失敗："+(e&&(e.code||e.message)||e),true);}
+function uid(){return auth&&auth.currentUser?auth.currentUser.uid:"";}
+function whoName(e){e=(e||"").toLowerCase();return e===ADMIN_EMAIL.toLowerCase()?"管理者":(MEMBERS[e]&&MEMBERS[e].name)||e.split("@")[0];}
+function whoTag(r){return r.who?" <small class='who'>"+esc(whoName(r.who))+"</small>":"";}
+function lsS(k){try{return localStorage.getItem(k)||"";}catch(e){return "";}}
+function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+function locked(v){document.body.classList.toggle("locked",v);}
+function ensureCats(){data.forEach(r=>{const l=CATS[r.type];if(l&&!l.some(c=>c.n===r.cat))l.push({n:r.cat,a:0});});}
+
+function catOpts(sel,type,val){const names=CATS[type].map(c=>c.n);if(val&&names.indexOf(val)<0)names.push(val);sel.innerHTML=names.map(c=>"<option"+(c===val?" selected":"")+">"+esc(c)+"</option>").join("");}
+function curType(){return document.querySelector("input[name=type]:checked").value;}
+function refreshCats(){const cur=$("fCat").value,t=curType();catOpts($("fCat"),t,CATS[t].some(c=>c.n===cur)?cur:undefined);}
+function defaultDate(){return ym===thisYm?thisYm+"-"+pad(now.getDate()):ym+"-01";}
+function shift(d){const p=ym.split("-").map(Number),dt=new Date(p[0],p[1]-1+d,1);ym=dt.getFullYear()+"-"+pad(dt.getMonth()+1);render();}
+function defAmt(t,n){const c=CATS[t].filter(x=>x.n===n)[0];return c&&c.a>0?c.a:0;}
+
+function applyAdmin(){
+  if(!admin){document.querySelector("input[name=type][value=out]").checked=true;catOpts($("fCat"),"out");showTab("ledger");}
+  render();
+}
+function refresh(){render();if(tab==="year")renderYear();}
+
+function render(){
+  ensureCats();
+  document.body.classList.toggle("admin",admin);
+  $("login").textContent=myEmail?(admin?"管理者・登出":"登出・"+whoName(myEmail)):"登入";
+  const p=ym.split("-");
+  $("ymLabel").textContent=p[0]+" 年 "+Number(p[1])+" 月";
+  $("ymPick").value=ym;
+  $("tblTitle").textContent=Number(p[1])+" 月月表";
+  if(lastYm!==ym){$("fDate").value=defaultDate();lastYm=ym;}
+  const list=data.filter(r=>r.date.slice(0,7)===ym).sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:(a.ts||0)-(b.ts||0));
+  let tin=0,tout=0,bal=0,html="";const byCat={};
+  list.forEach(r=>{
+    bal+=r.type==="in"?r.amt:-r.amt;
+    if(r.type==="in")tin+=r.amt;else{tout+=r.amt;byCat[r.cat]=(byCat[r.cat]||0)+r.amt;}
+    html+="<tr><td class='d'>"+r.date.slice(5).replace("-","/")+"</td><td class='c'>"+esc(r.cat)+"</td><td class='t'>"+esc(r.note||"")+whoTag(r)+"</td>"+
+      "<td class='i n in'>"+(r.type==="in"?"+"+fmt(r.amt):"")+"</td><td class='o n out'>"+(r.type==="out"?"−"+fmt(r.amt):"")+"</td>"+
+      "<td class='b n'>"+fmt(bal)+"</td><td class='x'><button class='ed' data-ed='"+r.id+"' aria-label='編輯'>編輯</button><button data-del='"+r.id+"' aria-label='刪除'>刪除</button></td></tr>";
+  });
+  $("rows").innerHTML=html;
+  $("empty").hidden=list.length>0;
+  $("sIn").textContent=fmt(tin);$("sOut").textContent=fmt(tout);
+  const b=$("sBal");b.textContent=fmt(tin-tout);b.className=tin-tout<0?"out":"in";
+  const keys=Object.keys(byCat).sort((a,b)=>byCat[b]-byCat[a]);
+  const PAL=["#6d3fc4","#e0719b","#f2a65a","#4cb8a4","#5b8def","#b79cf5","#e5c34b","#8bc766","#c2415b","#7a6c99","#3aa0c9","#d98cf0"];
+  if(!keys.length){$("cats").innerHTML="<div class='empty'>本月尚無支出。</div>";}
+  else{
+    let off=25,rings="",leg="";
+    keys.forEach((k,i)=>{
+      const pc=byCat[k]/tout*100,col=PAL[i%PAL.length],gap=keys.length>1?0.5:0;
+      rings+="<circle cx='21' cy='21' r='15.9155' fill='none' stroke='"+col+"' stroke-width='6' stroke-dasharray='"+Math.max(0.1,pc-gap)+" "+(100-Math.max(0.1,pc-gap))+"' stroke-dashoffset='"+off+"'/>";
+      off-=pc;
+      leg+="<div class='it'><span class='sw' style='background:"+col+"'></span><span>"+esc(k)+"</span><span>"+fmt(byCat[k])+"</span><span>"+(pc<1?"<1":Math.round(pc))+"%</span></div>";
+    });
+    $("cats").innerHTML="<div class='pie'><svg viewBox='0 0 42 42' role='img' aria-label='本月支出分類圓餅圖'><circle cx='21' cy='21' r='15.9155' fill='none' stroke='var(--soft)' stroke-width='6'/>"+rings+"<text x='21' y='19.5' text-anchor='middle' font-size='2.8' fill='var(--mute)'>總支出</text><text x='21' y='24.5' text-anchor='middle' font-size='4.2' font-weight='700' fill='var(--ink)'>"+fmt(tout)+"</text></svg><div class='lg'>"+leg+"</div></div>";
+  }
+}
+
+$("prev").onclick=()=>shift(-1);
+$("next").onclick=()=>shift(1);
+$("ymPick").onclick=function(){try{this.showPicker();}catch(e){}};
+$("ymPick").onchange=e=>{if(e.target.value){ym=e.target.value;render();}};
+document.querySelectorAll("input[name=type]").forEach(r=>{r.onchange=()=>catOpts($("fCat"),curType());});
+
+/* 新增（家人只能新增支出；規則端也會擋）*/
+$("f").onsubmit=e=>{
+  e.preventDefault();
+  if(!db){fail("尚未設定 Firebase");return;}
+  const type=admin?curType():"out",amt=Math.round(Number($("fAmt").value)),d=$("fDate").value;
+  if(!(amt>0)||!d)return;
+  addDoc(collection(db,"entries"),{date:d,type:type,cat:$("fCat").value,note:$("fNote").value.trim(),amt:amt,ts:Date.now(),by:uid(),who:myEmail}).catch(fail);
+  ym=d.slice(0,7);$("fAmt").value="";$("fNote").value="";$("fDate").value=defaultDate();lastYm=ym;render();
+};
+
+/* 編輯／刪除（管理者）*/
+$("rows").onclick=e=>{
+  if(!admin)return;
+  const t=e.target,del=t.getAttribute("data-del"),ed=t.getAttribute("data-ed");
+  if(del)ask("刪除這筆紀錄？").then(ok=>{if(ok)deleteDoc(doc(db,"entries",del)).catch(fail);});
+  if(ed){
+    const r=data.filter(x=>x.id===ed)[0];if(!r)return;
+    editId=r.id;$("eType").value=r.type;catOpts($("eCat"),r.type,r.cat);
+    $("eDate").value=r.date;$("eNote").value=r.note||"";$("eAmt").value=r.amt;
+    $("dEdit").showModal();
+  }
+};
+$("eType").onchange=()=>catOpts($("eCat"),$("eType").value);
+$("eCancel").onclick=()=>$("dEdit").close();
+$("fEdit").onsubmit=e=>{
+  e.preventDefault();
+  const amt=Math.round(Number($("eAmt").value));if(!(amt>0))return;
+  updateDoc(doc(db,"entries",editId),{type:$("eType").value,cat:$("eCat").value,date:$("eDate").value,note:$("eNote").value.trim(),amt:amt}).catch(fail);
+  ym=$("eDate").value.slice(0,7);$("dEdit").close();render();
+};
+
+/* 登入／登出：Email 登入連結（家人）或密碼（管理者）*/
+function openLogin(){$("pw").value="";$("lMsg").textContent="";$("lMsg").style.color="";$("em").value=lsS("ledger-email");$("dLogin").showModal();}
+function lMsg(t,ok){$("lMsg").style.color=ok?"var(--in)":"";$("lMsg").textContent=t;}
+function needAuth(){if(!auth){fail("尚未設定 Firebase");return true;}return false;}
+$("login").onclick=()=>{
+  if(needAuth())return;
+  if(myEmail){ask("要登出嗎？").then(ok=>{if(ok)logout();});return;}
+  openLogin();
+};
+$("gLogin").onclick=()=>{if(!needAuth())openLogin();};
+async function logout(){
+  unsubs.forEach(f=>f());unsubs=[];started=false;
+  try{await signOut(auth);await terminate(db);await clearIndexedDbPersistence(db);}catch(e){console.error(e);}
+  location.reload();
+}
+$("lCancel").onclick=()=>$("dLogin").close();
+$("lLink").onclick=async()=>{
+  const em=$("em").value.trim();
+  if(!/^\S+@\S+\.\S+$/.test(em)){lMsg("請輸入正確的 Email。");return;}
+  try{
+    await sendSignInLinkToEmail(auth,em,{url:location.origin+location.pathname,handleCodeInApp:true});
+    lsSet("ledger-email",em);lMsg("已寄出登入連結，請到信箱點擊（也請看垃圾郵件匣）。",true);
+  }catch(err){lMsg("寄送失敗："+(err.code||err.message));}
+};
+$("fLogin").onsubmit=async e=>{
+  e.preventDefault();
+  if(!$("pw").value){lMsg("要用密碼登入請輸入密碼；家人請按上方「寄送登入連結」。");return;}
+  try{await signInWithEmailAndPassword(auth,$("em").value.trim(),$("pw").value);$("dLogin").close();}
+  catch(err){lMsg(["auth/invalid-credential","auth/wrong-password","auth/user-not-found","auth/invalid-email"].includes(err.code)?"帳號或密碼不正確。":"登入失敗："+(err.code||err.message));}
+};
+
+/* 家人帳號管理（管理者）：members/{email} */
+function renderMembers(){
+  const ks=Object.keys(MEMBERS).sort();
+  $("memList").innerHTML=ks.length?ks.map(k=>'<div class="mrow"><span>'+esc(MEMBERS[k].name||"（未命名）")+'<br><small class="who0">'+esc(k)+'</small></span><button type="button" data-mrm="'+esc(k)+'">移除</button></div>').join(""):'<p class="note">尚未新增家人。</p>';
+}
+$("mAdd").onclick=()=>{
+  const em=$("mEmail").value.trim().toLowerCase(),nm=$("mName").value.trim().slice(0,10);
+  if(!/^\S+@\S+\.\S+$/.test(em)){setSync("請輸入正確的家人 Email",true);return;}
+  if(em===ADMIN_EMAIL.toLowerCase()){setSync("這是管理者的 Email，不需新增",true);return;}
+  setDoc(doc(db,"members",em),{email:em,name:nm,addedAt:Date.now()}).then(()=>{$("mEmail").value="";$("mName").value="";}).catch(fail);
+};
+$("memList").onclick=e=>{
+  const k=e.target.getAttribute("data-mrm");if(!k)return;
+  ask("移除「"+whoName(k)+"」（"+k+"）？移除後這個 Email 就無法登入。").then(ok=>{if(ok)deleteDoc(doc(db,"members",k)).catch(fail);});
+};
+
+function ask(msg){return new Promise(res=>{const d=$("dAsk");$("aMsg").textContent=msg;const done=v=>{d.onclose=null;$("fAsk").onsubmit=null;$("aNo").onclick=null;if(d.open)d.close();res(v);};$("fAsk").onsubmit=e=>{e.preventDefault();done(true);};$("aNo").onclick=()=>done(false);d.onclose=()=>done(false);d.showModal();});}
+function showTab(n){tab=n;const t={ledger:"pgLedger",year:"pgYear",set:"pgSet"};for(const k in t){$(t[k]).hidden=k!==n;}$("tabL").classList.toggle("on",n==="ledger");$("tabY").classList.toggle("on",n==="year");$("tabS").classList.toggle("on",n==="set");if(n==="set")renderSet();if(n==="year")renderYear();}
+
+/* 分類設定（存到 config/cats，所有裝置即時連動）*/
+function saveCats(){if(admin&&db)setDoc(doc(db,"config","cats"),{out:CATS.out,in:CATS.in}).catch(fail);}
+function renderSet(){
+  renderMembers();
+  ["out","in"].forEach(t=>{
+    $("set_"+t).innerHTML=CATS[t].map((c,i)=>'<div class="srow"><input data-t="'+t+'" data-i="'+i+'" data-k="n" value="'+esc(c.n)+'" aria-label="分類名稱"><input data-t="'+t+'" data-i="'+i+'" data-k="a" type="number" inputmode="numeric" min="0" value="'+(c.a||"")+'" placeholder="金額" aria-label="預設金額"><button type="button" data-rm="'+t+':'+i+'" aria-label="移除">✕</button></div>').join("");
+  });
+}
+async function cascade(type,oldN,newN){
+  const rows=data.filter(r=>r.type===type&&r.cat===oldN);
+  for(let i=0;i<rows.length;i+=400){const b=writeBatch(db);rows.slice(i,i+400).forEach(r=>b.update(doc(db,"entries",r.id),{cat:newN}));await b.commit();}
+}
+$("fCat").onchange=function(){const a=defAmt(curType(),this.value);if(a)$("fAmt").value=a;};
+$("tabL").onclick=()=>showTab("ledger");
+$("tabS").onclick=()=>showTab("set");
+$("pgSet").onchange=e=>{
+  const t=e.target,ty=t.getAttribute("data-t");if(!ty)return;
+  const c=CATS[ty][Number(t.getAttribute("data-i"))];if(!c)return;
+  if(t.getAttribute("data-k")==="n"){
+    const old=c.n,nn=t.value.trim()||old;c.n=nn;t.value=nn;saveCats();refreshCats();
+    if(nn!==old&&data.some(r=>r.type===ty&&r.cat===old))ask("同步把所有舊紀錄的「"+old+"」改成「"+nn+"」？").then(ok=>{if(ok)cascade(ty,old,nn).catch(fail);});
+  }else{c.a=Math.max(0,Math.round(Number(t.value)))||0;saveCats();}
+};
+$("pgSet").onclick=e=>{
+  const t=e.target,rm=t.getAttribute("data-rm"),ad=t.getAttribute("data-add"),rs=t.getAttribute("data-reset");
+  if(rm){const p=rm.split(":");CATS[p[0]].splice(Number(p[1]),1);saveCats();renderSet();refreshCats();}
+  if(ad){CATS[ad].push({n:"新項目",a:0});saveCats();renderSet();refreshCats();}
+  if(rs)ask("還原成預設分類與金額？").then(ok=>{if(ok){CATS=clone(DEF);saveCats();renderSet();refreshCats();}});
+};
+
+/* 帶入固定收支 */
+$("fill").onclick=function(){
+  let n=0;const b=writeBatch(db);
+  ["in","out"].forEach(t=>CATS[t].forEach(c=>{
+    if(!(c.a>0))return;
+    if(data.some(r=>r.date.slice(0,7)===ym&&r.type===t&&r.cat===c.n))return;
+    b.set(doc(collection(db,"entries")),{date:ym+"-01",type:t,cat:c.n,note:"",amt:c.a,ts:Date.now()+n,by:uid(),who:myEmail});n++;
+  }));
+  if(n)b.commit().catch(fail);
+  else{const el=this;el.textContent="本月已帶入過";setTimeout(()=>{el.textContent="帶入固定收支";},1600);}
+};
+
+/* 年表 */
+function net(y){let s=0;data.forEach(r=>{if(r.date.slice(0,4)===String(y))s+=r.type==="in"?r.amt:-r.amt;});return s;}
+function yOpen(y){
+  if(OPEN[y]!=null)return Number(OPEN[y])||0;
+  const base=Math.min.apply(null,Object.keys(OPEN).map(Number));
+  return y<=base?0:yOpen(y-1)+net(y-1);
+}
+function fm(n){return n<0?"<span class='out'>($"+fmt(-n)+")</span>":"$"+fmt(n);}
+function renderYear(){
+  $("yLabel").textContent=yr+" 年";
+  const inc=[],exp=[];let last=0;
+  for(let m=1;m<=12;m++){inc[m]=0;exp[m]=0;}
+  data.forEach(r=>{
+    if(r.date.slice(0,4)!==String(yr))return;
+    const k=Number(r.date.slice(5,7));
+    if(r.type==="in")inc[k]+=r.amt;else exp[k]+=r.amt;
+    if(k>last)last=k;
+  });
+  const open=yOpen(yr);let run=open,ti=0,te=0,rows="";
+  if(document.activeElement!==$("yOpen"))$("yOpen").value=open;
+  $("yHead").innerHTML="<tr><th>月份</th><th>期初帳戶餘額</th><th>＋ 家用提撥收入</th><th>－ 實際收支支出</th><th>＝ 當月結餘</th><th>期末累計餘額</th></tr>";
+  for(let m=1;m<=12;m++){
+    const lab="<td data-m='"+yr+"-"+pad(m)+"'>"+m+"月</td>";
+    if(m>last){rows+="<tr>"+lab+"<td>–</td><td>–</td><td>–</td><td>–</td><td>–</td></tr>";continue;}
+    const bal=inc[m]-exp[m],beg=run;run=beg+bal;ti+=inc[m];te+=exp[m];
+    rows+="<tr>"+lab+"<td>"+fm(beg)+"</td><td>"+fm(inc[m])+"</td><td>"+fm(exp[m])+"</td><td>"+fm(bal)+"</td><td>"+fm(run)+"</td></tr>";
+  }
+  rows+="<tr class='tot'><td>全年</td><td>"+fm(open)+"</td><td>"+fm(ti)+"</td><td>"+fm(te)+"</td><td>"+fm(ti-te)+"</td><td>"+fm(run)+"</td></tr>";
+  $("yBody").innerHTML=rows;
+}
+$("tabY").onclick=()=>showTab("year");
+$("yPrev").onclick=()=>{yr--;renderYear();};
+$("yNext").onclick=()=>{yr++;renderYear();};
+$("yOpen").onchange=function(){OPEN[yr]=Math.round(Number(this.value))||0;if(db)setDoc(doc(db,"config","open"),{map:OPEN}).catch(fail);renderYear();};
+$("yBody").onclick=e=>{const m=e.target.getAttribute("data-m");if(m){ym=m;showTab("ledger");render();}};
+
+/* 資料搬家：本機／內建資料 → 雲端；JSON 匯出入 */
+function fixUtil(r){if(r.type==="out"&&r.cat==="水電瓦斯"){const n=r.note||"";r.cat=n.indexOf("水")>=0?"水費":n.indexOf("電")>=0?"電費":"瓦斯費";if(["電費","水費","瓦斯","瓦斯費"].indexOf(n.trim())>=0)r.note="";}return r;}
+function lsGet(k){try{return JSON.parse(localStorage.getItem(k));}catch(e){return null;}}
+async function commitRows(items){
+  for(let i=0;i<items.length;i+=400){const b=writeBatch(db);items.slice(i,i+400).forEach(x=>b.set(x[0],x[1]));await b.commit();}
+}
+$("mig").onclick=()=>ask("把這個瀏覽器的本機資料（沒有的話用內建初始資料）上傳到雲端？重複上傳不會產生重複紀錄。").then(async ok=>{
+  if(!ok)return;
+  try{
+    let rows=lsGet("household-ledger-v1");
+    if(!rows||!rows.length)rows=SEED.concat(SEED2).map((s,i)=>({id:1700000000000+i,date:s[0],type:s[1],cat:s[2],note:s[3],amt:s[4]}));
+    rows.forEach(fixUtil);
+    await commitRows(rows.map(r=>[doc(db,"entries","m_"+r.id),{date:r.date,type:r.type,cat:r.cat,note:r.note||"",amt:r.amt,ts:Number(r.id)||Date.now(),by:uid()}]));
+    const lc=lsGet("household-ledger-cats");if(lc&&lc.out&&lc.in)await setDoc(doc(db,"config","cats"),{out:lc.out,in:lc.in});
+    const lo=lsGet("household-ledger-open");if(lo&&typeof lo==="object")await setDoc(doc(db,"config","open"),{map:lo});
+    setSync("已上傳 "+rows.length+" 筆到雲端");
+  }catch(e){fail(e);}
+});
+$("exp").onclick=()=>{
+  const out=data.map(r=>({date:r.date,type:r.type,cat:r.cat,note:r.note||"",amt:r.amt})).sort((a,b)=>a.date<b.date?-1:1);
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(out,null,1)],{type:"application/json"}));
+  a.download="家用記帳備份-"+thisYm+".json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+};
+$("impBtn").onclick=()=>$("imp").click();
+$("imp").onchange=async function(){
+  const f=this.files[0];this.value="";if(!f)return;
+  try{
+    const arr=JSON.parse(await f.text());
+    const ok=Array.isArray(arr)&&arr.every(r=>r&&/^\d{4}-\d\d-\d\d$/.test(r.date)&&(r.type==="in"||r.type==="out")&&typeof r.cat==="string"&&Number(r.amt)>0);
+    if(!ok){fail("JSON 格式不符");return;}
+    if(!await ask("匯入 "+arr.length+" 筆紀錄到雲端？（會新增，不會覆蓋現有資料）"))return;
+    const t=Date.now();
+    await commitRows(arr.map((r,i)=>[doc(collection(db,"entries")),{date:r.date,type:r.type,cat:r.cat,note:String(r.note||"").slice(0,40),amt:Math.round(Number(r.amt)),ts:t+i,by:uid()}]));
+    setSync("已匯入 "+arr.length+" 筆");
+  }catch(e){fail(e);}
+};
+
+/* 即時同步：任何裝置的變更都會推送到所有登入中的頁面 */
+function listen(){
+  if(started)return;started=true;
+  unsubs.push(onSnapshot(collection(db,"entries"),{includeMetadataChanges:true},snap=>{
+    data=snap.docs.map(d=>Object.assign({id:d.id},d.data()));
+    setSync(snap.metadata.hasPendingWrites?"同步中…":snap.metadata.fromCache?"離線（使用本機快取）":"● 已連線・即時同步");
+    refresh();
+  },fail));
+  unsubs.push(onSnapshot(doc(db,"config","cats"),snap=>{
+    const v=snap.exists()?snap.data():null;
+    CATS=v&&v.out&&v.in?{out:v.out,in:v.in}:clone(DEF);
+    ensureCats();refreshCats();
+    if(tab==="set"&&!snap.metadata.hasPendingWrites&&!$("pgSet").contains(document.activeElement))renderSet();
+  },fail));
+  unsubs.push(onSnapshot(doc(db,"config","open"),snap=>{
+    OPEN=snap.exists()&&snap.data().map?snap.data().map:{2026:36862};
+    if(tab==="year")renderYear();
+  },fail));
+  unsubs.push(onSnapshot(collection(db,"members"),snap=>{
+    MEMBERS={};snap.docs.forEach(d=>{MEMBERS[d.id]=d.data();});
+    if(tab==="set"&&!$("pgSet").contains(document.activeElement))renderMembers();
+    render();
+  },fail));
+}
+
+if(FIREBASE_CONFIG.apiKey.indexOf("YOUR")===0){
+  setSync("尚未填入 Firebase 設定（見檔案上方）",true);locked(true);
+}else{
+  const app=initializeApp(FIREBASE_CONFIG);
+  auth=getAuth(app);
+  db=initializeFirestore(app,{localCache:persistentLocalCache({tabManager:persistentMultipleTabManager()})});
+  if(isSignInWithEmailLink(auth,location.href)){          /* 從信箱點連結回來 */
+    const em=(lsS("ledger-email")||prompt("請輸入收到登入連結的 Email：")||"").trim();
+    signInWithEmailLink(auth,em,location.href)
+      .then(()=>lsSet("ledger-email",em))
+      .catch(err=>{$("gMsg").textContent="登入連結無效或已過期，請重新寄送。（"+(err.code||err.message)+"）";})
+      .finally(()=>history.replaceState(null,"",location.pathname));
+  }
+  onAuthStateChanged(auth,async user=>{
+    unsubs.forEach(f=>f());unsubs=[];started=false;
+    if(!user||user.isAnonymous){
+      if(user)signOut(auth);
+      myEmail="";admin=false;data=[];MEMBERS={};locked(true);applyAdmin();setSync("請先登入");return;
+    }
+    const em=(user.email||"").toLowerCase(),isAdmin=em===ADMIN_EMAIL.toLowerCase();
+    if(!isAdmin){
+      try{const m=await getDoc(doc(db,"members",em));if(!m.exists())throw new Error("no member");}
+      catch(e){$("gMsg").textContent="「"+em+"」尚未被管理者加入（或 Email 尚未驗證），請聯絡管理者。";await signOut(auth);return;}
+    }
+    myEmail=em;admin=isAdmin;$("gMsg").textContent="";locked(false);applyAdmin();listen();
+  });
+}
+catOpts($("fCat"),"out");render();
+</script>
+</body>
+</html>
